@@ -1,38 +1,43 @@
 import sys
 import os
-import numpy as np
+import pickle
+import redis
 
 '''
 Arguments:
 [1]: DL framework in Keras backend
-[2]: DNN model path
-[3]: Layer index of DNN model to be tested
-[4]: Path of the input set to be parsed into the DNN model
-[5]: Path of the predictions to be saved to
+[2]: db flag of redis server
+[3]: layer index of predictions to get
 '''
 keras_bk = sys.argv[1]
-model_path = sys.argv[2]
-input_path = sys.argv[3]
-save_path = sys.argv[4]
-layer_idx = sys.argv[5]
+db_flag = sys.argv[2]
+layer_idx = sys.argv[3]
 
+# import keras with backend=keras_bk
 os.environ['KERAS_BACKEND'] = keras_bk
-
+os.environ['CUDA_VISIBLE_DEVICES']=""
 import keras
 
-model = keras.models.load_model(model_path, compile=False)
 
+r = redis.Redis(db=db_flag)
+
+# load models and inputs
+model = pickle.loads(r.get("model"))
+inputs = pickle.loads(r.get("inputs"))
+
+# check if layer_idx is acceptable
 if abs(int(layer_idx)) > len(model.layers):
     raise Exception("Layer index out of range")
-    
-inputs = np.load(input_path)
 
+# predict
 extractor = keras.Model(inputs=model.inputs, outputs=model.layers[int(layer_idx)].output)
 outputs = extractor.predict(inputs)
 
-np.save(save_path, outputs)
+# save predictions
+r.hset(keras_bk, "predictions", outputs.dumps())
+
 
 '''
 Example usage:
-python get_predicts.py "theano" "my_model.h5" "my_input.npy" "my_result.npy"
+python get_predicts.py "theano" 0 -1
 '''
