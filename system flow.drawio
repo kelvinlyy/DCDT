@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2021-12-28T07:26:07.712Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36" etag="XFQYmx2bLXVVrmyT3I4G" version="15.8.2" type="github">
+<mxfile host="app.diagrams.net" modified="2021-12-28T07:28:36.492Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36" etag="oQRW1C57JTmTmCeIcXjW" version="15.8.2" type="github">
   <diagram id="hX-ZhJ2K5Q5VnK9N8v0G" name="Page-1">
-    <mxGraphModel dx="2333" dy="1009" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="2595" dy="1765" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -75,15 +75,6 @@
             <mxPoint x="686.39" y="1550" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="fLmXIGUeT9Dw2lGHP_HX-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="fLmXIGUeT9Dw2lGHP_HX-1" target="fLmXIGUeT9Dw2lGHP_HX-2" edge="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="fLmXIGUeT9Dw2lGHP_HX-1" value="Mutation metric:&lt;br&gt;change of coverage" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="-210" y="90" width="120" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="fLmXIGUeT9Dw2lGHP_HX-2" value="For tuning hyperparameter for each function" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="-210" y="190" width="120" height="60" as="geometry" />
-        </mxCell>
         <mxCell id="1Tv84CjWzPSOuGYvP6sn-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="1Tv84CjWzPSOuGYvP6sn-1" target="1Tv84CjWzPSOuGYvP6sn-3">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
@@ -103,13 +94,13 @@
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="410" y="380" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="180" y="725" />
+              <mxPoint x="180" y="735" />
               <mxPoint x="180" y="380" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="1Tv84CjWzPSOuGYvP6sn-8" value="&lt;span&gt;pass to&amp;nbsp; thresold of change of coverage&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="302" y="660" width="218.67" height="120" as="geometry" />
+          <mxGeometry x="311" y="680" width="200.67" height="110" as="geometry" />
         </mxCell>
         <mxCell id="1Tv84CjWzPSOuGYvP6sn-12" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;" edge="1" parent="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
@@ -133,6 +124,9 @@
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="680" y="800" as="sourcePoint" />
             <mxPoint x="680" y="360" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="680" y="580" />
+            </Array>
           </mxGeometry>
         </mxCell>
       </root>
