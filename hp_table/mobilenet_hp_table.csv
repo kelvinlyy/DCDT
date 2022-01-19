@@ -1,0 +1,272 @@
+Layer,Layer hyperparameter,Initial value
+InputLayer,input_shape,"[(None, 224, 224, 3)]"
+ZeroPadding2D,padding,"((0, 1), (0, 1))"
+Conv2D,filters,32
+,kernel_size,"(3, 3)"
+,strides,"(2, 2)"
+,dilation_rate,"(1, 1)"
+,groups,1
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+DepthwiseConv2D,kernel_size,"(3, 3)"
+,strides,"(1, 1)"
+,depth_multiplier,1
+,dilation_rate,"(1, 1)"
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+Conv2D,filters,64
+,kernel_size,"(1, 1)"
+,strides,"(1, 1)"
+,dilation_rate,"(1, 1)"
+,groups,1
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+ZeroPadding2D,padding,"((0, 1), (0, 1))"
+DepthwiseConv2D,kernel_size,"(3, 3)"
+,strides,"(2, 2)"
+,depth_multiplier,1
+,dilation_rate,"(1, 1)"
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+Conv2D,filters,128
+,kernel_size,"(1, 1)"
+,strides,"(1, 1)"
+,dilation_rate,"(1, 1)"
+,groups,1
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+DepthwiseConv2D,kernel_size,"(3, 3)"
+,strides,"(1, 1)"
+,depth_multiplier,1
+,dilation_rate,"(1, 1)"
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+Conv2D,filters,128
+,kernel_size,"(1, 1)"
+,strides,"(1, 1)"
+,dilation_rate,"(1, 1)"
+,groups,1
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+ZeroPadding2D,padding,"((0, 1), (0, 1))"
+DepthwiseConv2D,kernel_size,"(3, 3)"
+,strides,"(2, 2)"
+,depth_multiplier,1
+,dilation_rate,"(1, 1)"
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+Conv2D,filters,256
+,kernel_size,"(1, 1)"
+,strides,"(1, 1)"
+,dilation_rate,"(1, 1)"
+,groups,1
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+DepthwiseConv2D,kernel_size,"(3, 3)"
+,strides,"(1, 1)"
+,depth_multiplier,1
+,dilation_rate,"(1, 1)"
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+Conv2D,filters,256
+,kernel_size,"(1, 1)"
+,strides,"(1, 1)"
+,dilation_rate,"(1, 1)"
+,groups,1
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+ZeroPadding2D,padding,"((0, 1), (0, 1))"
+DepthwiseConv2D,kernel_size,"(3, 3)"
+,strides,"(2, 2)"
+,depth_multiplier,1
+,dilation_rate,"(1, 1)"
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+Conv2D,filters,512
+,kernel_size,"(1, 1)"
+,strides,"(1, 1)"
+,dilation_rate,"(1, 1)"
+,groups,1
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+DepthwiseConv2D,kernel_size,"(3, 3)"
+,strides,"(1, 1)"
+,depth_multiplier,1
+,dilation_rate,"(1, 1)"
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+Conv2D,filters,512
+,kernel_size,"(1, 1)"
+,strides,"(1, 1)"
+,dilation_rate,"(1, 1)"
+,groups,1
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+DepthwiseConv2D,kernel_size,"(3, 3)"
+,strides,"(1, 1)"
+,depth_multiplier,1
+,dilation_rate,"(1, 1)"
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+Conv2D,filters,512
+,kernel_size,"(1, 1)"
+,strides,"(1, 1)"
+,dilation_rate,"(1, 1)"
+,groups,1
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+DepthwiseConv2D,kernel_size,"(3, 3)"
+,strides,"(1, 1)"
+,depth_multiplier,1
+,dilation_rate,"(1, 1)"
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+Conv2D,filters,512
+,kernel_size,"(1, 1)"
+,strides,"(1, 1)"
+,dilation_rate,"(1, 1)"
+,groups,1
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+DepthwiseConv2D,kernel_size,"(3, 3)"
+,strides,"(1, 1)"
+,depth_multiplier,1
+,dilation_rate,"(1, 1)"
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+Conv2D,filters,512
+,kernel_size,"(1, 1)"
+,strides,"(1, 1)"
+,dilation_rate,"(1, 1)"
+,groups,1
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+DepthwiseConv2D,kernel_size,"(3, 3)"
+,strides,"(1, 1)"
+,depth_multiplier,1
+,dilation_rate,"(1, 1)"
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+Conv2D,filters,512
+,kernel_size,"(1, 1)"
+,strides,"(1, 1)"
+,dilation_rate,"(1, 1)"
+,groups,1
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+ZeroPadding2D,padding,"((0, 1), (0, 1))"
+DepthwiseConv2D,kernel_size,"(3, 3)"
+,strides,"(2, 2)"
+,depth_multiplier,1
+,dilation_rate,"(1, 1)"
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+Conv2D,filters,1024
+,kernel_size,"(1, 1)"
+,strides,"(1, 1)"
+,dilation_rate,"(1, 1)"
+,groups,1
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+DepthwiseConv2D,kernel_size,"(3, 3)"
+,strides,"(1, 1)"
+,depth_multiplier,1
+,dilation_rate,"(1, 1)"
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+Conv2D,filters,1024
+,kernel_size,"(1, 1)"
+,strides,"(1, 1)"
+,dilation_rate,"(1, 1)"
+,groups,1
+BatchNormalization,momentum,0.99
+,epsilon,0.001
+ReLU,max_value,6.0
+,negative_slope,0.0
+,threshold,0.0
+Reshape,target_shape,"(1, 1, 1024)"
+Dropout,rate,0.001
+Conv2D,filters,1000
+,kernel_size,"(1, 1)"
+,strides,"(1, 1)"
+,dilation_rate,"(1, 1)"
+,groups,1
+Reshape,target_shape,"(1000,)"
