@@ -1,1 +1,121 @@
-<mxfile host="app.diagrams.net" modified="2022-02-16T09:38:52.275Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.2 Safari/605.1.15" version="16.5.6" etag="ytMiI5V2HJ3oe4Pbxq1E" type="github"><diagram id="KMrJF5xkyydDern5e_y1">UzV2zq1wL0osyPDNT0nNUTV2VTV2LsrPL4GwciucU3NyVI0MMlNUjV1UjYwMgFjVyA2HrCFY1qAgsSg1rwSLBiADYTaQg2Y1AA==</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2022-02-16T10:13:37.928Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.2 Safari/605.1.15" etag="365UKZe1Oj58Qd8-2EdB" version="16.5.6" type="github">
+  <diagram id="KMrJF5xkyydDern5e_y1" name="Page-1">
+    <mxGraphModel dx="899" dy="613" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-1" value="Input layer" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="730" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ZWeKVcOg7MyMfSJs-o2y-4" target="ZWeKVcOg7MyMfSJs-o2y-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-4" value="Dense layer" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="890" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ZWeKVcOg7MyMfSJs-o2y-6" target="ZWeKVcOg7MyMfSJs-o2y-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-6" value="Conv2D layer" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="970" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-8" value="" style="endArrow=none;dashed=1;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="ZWeKVcOg7MyMfSJs-o2y-4" target="ZWeKVcOg7MyMfSJs-o2y-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="240" y="860" as="sourcePoint" />
+            <mxPoint x="290" y="810" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-9" value="" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="1050" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-11" value="Model" style="swimlane;" vertex="1" parent="1">
+          <mxGeometry x="140" y="680" width="240" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-13" value="" style="endArrow=none;dashed=1;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ZWeKVcOg7MyMfSJs-o2y-6" target="ZWeKVcOg7MyMfSJs-o2y-15">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="900" as="sourcePoint" />
+            <mxPoint x="440" y="1000" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-15" value="NaN found" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="970" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="ZWeKVcOg7MyMfSJs-o2y-16" target="ZWeKVcOg7MyMfSJs-o2y-25">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="223" y="260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="ZWeKVcOg7MyMfSJs-o2y-16" target="ZWeKVcOg7MyMfSJs-o2y-26">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-16" value="Inconsistency detection phase" style="swimlane;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="140" y="50" width="330" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-17" value="Framework 1" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="ZWeKVcOg7MyMfSJs-o2y-16">
+          <mxGeometry x="20" y="60" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-18" value="Framework 2" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="ZWeKVcOg7MyMfSJs-o2y-16">
+          <mxGeometry x="190" y="60" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ZWeKVcOg7MyMfSJs-o2y-19">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="470" y="100" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-19" value="Model" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="70" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ZWeKVcOg7MyMfSJs-o2y-20">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="470" y="180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-20" value="Input" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="150" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-36" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="ZWeKVcOg7MyMfSJs-o2y-25" target="ZWeKVcOg7MyMfSJs-o2y-43">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="222" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-40" value="else" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="ZWeKVcOg7MyMfSJs-o2y-36">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-39" value="If the layers&lt;br&gt;in the 2&lt;br&gt;frameworks&lt;br&gt;are identical" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ZWeKVcOg7MyMfSJs-o2y-25" target="ZWeKVcOg7MyMfSJs-o2y-38">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-25" value="Layers with NaN in the 2 frameworks" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="162" y="270" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-33" value="else" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ZWeKVcOg7MyMfSJs-o2y-26" target="ZWeKVcOg7MyMfSJs-o2y-32">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-42" value="If there is&amp;nbsp;&lt;br&gt;NaN&amp;nbsp;in the &lt;br&gt;predictions" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ZWeKVcOg7MyMfSJs-o2y-26" target="ZWeKVcOg7MyMfSJs-o2y-41">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-26" value="Predictions from logit layers" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="328" y="270" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-32" value="Compute Fitness values" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="328" y="390" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-38" value="" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#ff0000;labelBackgroundColor=none;labelBorderColor=none;" vertex="1" parent="1">
+          <mxGeometry x="20" y="285" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-41" value="Cannot compute&lt;br&gt;Fitness values" style="ellipse;whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="530" y="270" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-44" value="In the&amp;nbsp;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ZWeKVcOg7MyMfSJs-o2y-43">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="222" y="540" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-43" value="Find the set difference of the &lt;br&gt;NaN layers" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;labelBorderColor=none;" vertex="1" parent="1">
+          <mxGeometry x="162" y="390" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
