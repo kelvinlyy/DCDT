@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2022-02-17T07:30:43.450Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.2 Safari/605.1.15" etag="tGdVJ5FbjRMV4NKikbUo" version="16.5.6" type="github">
+<mxfile host="app.diagrams.net" modified="2022-02-19T04:24:48.947Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.3 Safari/605.1.15" etag="0TMDbJ0YvhOtxiCN4N_r" version="16.5.6" type="github">
   <diagram id="KMrJF5xkyydDern5e_y1" name="Page-1">
     <mxGraphModel dx="899" dy="613" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -102,13 +102,13 @@
         <mxCell id="ZWeKVcOg7MyMfSJs-o2y-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="ZWeKVcOg7MyMfSJs-o2y-16" target="ZWeKVcOg7MyMfSJs-o2y-26" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-16" value="Inconsistency detection phase" style="swimlane;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-16" value="Inconsistency detection phase" style="swimlane;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
           <mxGeometry x="140" y="50" width="330" height="160" as="geometry" />
         </mxCell>
-        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-17" value="Framework 1" style="rounded=1;whiteSpace=wrap;html=1;" parent="ZWeKVcOg7MyMfSJs-o2y-16" vertex="1">
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-17" value="Framework 1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="ZWeKVcOg7MyMfSJs-o2y-16" vertex="1">
           <mxGeometry x="20" y="60" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-18" value="Framework 2" style="rounded=1;whiteSpace=wrap;html=1;" parent="ZWeKVcOg7MyMfSJs-o2y-16" vertex="1">
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-18" value="Framework 2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="ZWeKVcOg7MyMfSJs-o2y-16" vertex="1">
           <mxGeometry x="190" y="60" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="ZWeKVcOg7MyMfSJs-o2y-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="ZWeKVcOg7MyMfSJs-o2y-19" edge="1">
@@ -151,10 +151,10 @@
             <mxPoint x="530" y="300" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-26" value="Predictions from logit layers" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-26" value="Predictions from logit layers" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
           <mxGeometry x="328" y="270" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-32" value="Compute Fitness values" style="whiteSpace=wrap;html=1;rounded=0;" parent="1" vertex="1">
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-32" value="Compute Fitness values" style="whiteSpace=wrap;html=1;rounded=0;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
           <mxGeometry x="328" y="390" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="ZWeKVcOg7MyMfSJs-o2y-38" value="" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#ff0000;labelBackgroundColor=none;labelBorderColor=none;" parent="1" vertex="1">
@@ -187,21 +187,21 @@
             <mxPoint x="727" y="1140" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="a7J1ANI23KGyTeSdZP0Z-1" value="Normal outputs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;dashed=1;" edge="1" parent="1" source="ZWeKVcOg7MyMfSJs-o2y-60">
+        <mxCell id="a7J1ANI23KGyTeSdZP0Z-1" value="Normal outputs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;dashed=1;" parent="1" source="ZWeKVcOg7MyMfSJs-o2y-60" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="727" y="790" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="a7J1ANI23KGyTeSdZP0Z-26" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontColor=#FF0800;endArrow=classic;endFill=1;" edge="1" parent="1" source="a7J1ANI23KGyTeSdZP0Z-20" target="a7J1ANI23KGyTeSdZP0Z-25">
+        <mxCell id="a7J1ANI23KGyTeSdZP0Z-26" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontColor=#FF0800;endArrow=classic;endFill=1;" parent="1" source="a7J1ANI23KGyTeSdZP0Z-20" target="a7J1ANI23KGyTeSdZP0Z-25" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="a7J1ANI23KGyTeSdZP0Z-20" value="Problem may exist in both frameworks or the layers before layer n in framework A" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#FF0800;" vertex="1" parent="1">
+        <mxCell id="a7J1ANI23KGyTeSdZP0Z-20" value="Problem may exist in both frameworks or the layers before layer n in framework A" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#FF0800;" parent="1" vertex="1">
           <mxGeometry x="162" y="1058" width="221" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="a7J1ANI23KGyTeSdZP0Z-21" value="Else if NaN is gone" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontColor=#FF0800;endArrow=classic;endFill=1;" edge="1" parent="1" source="ZWeKVcOg7MyMfSJs-o2y-78" target="a7J1ANI23KGyTeSdZP0Z-20">
+        <mxCell id="a7J1ANI23KGyTeSdZP0Z-21" value="Else if NaN is gone" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontColor=#FF0800;endArrow=classic;endFill=1;" parent="1" source="ZWeKVcOg7MyMfSJs-o2y-78" target="a7J1ANI23KGyTeSdZP0Z-20" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="a7J1ANI23KGyTeSdZP0Z-25" value="Need more manual analysis" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#FF0800;" vertex="1" parent="1">
+        <mxCell id="a7J1ANI23KGyTeSdZP0Z-25" value="Need more manual analysis" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#FF0800;" parent="1" vertex="1">
           <mxGeometry x="223.5" y="1127" width="98" height="42" as="geometry" />
         </mxCell>
       </root>
