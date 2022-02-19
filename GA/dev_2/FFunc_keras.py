@@ -2,36 +2,30 @@ from multiprocessing import Process
 import os
 import numpy as np
 import pickle
-
-py_env = "/data/yylaiai/anaconda3/envs/tf_th/bin/python"
-get_prediction_py = "get_prediction_keras.py"
-
-# parse arguments to generate command for predicting input
-def get_prediction_cmd(model_framework, db_flag, model_key, input_key, predictions_key, layer_idx):
-    cmd = f"{py_env} {get_prediction_py} {model_framework} {db_flag} {model_key} {input_key} {predictions_key} {layer_idx}"
-    return cmd
+from kerasPredictCMD import get_outputs_cmd
 
 
 class InconsistencyFFunc:
     def __init__(self, redis_server, db_flag, mut_level, backends, model, model_weights, inputs):
         self.redis_server = redis_server
         self.db_flag = db_flag
-
         self.mut_level = mut_level
         self.backend_1, self.backend_2 = backends
         self.model = model
         self.model_weights = model_weights
         self.inputs = inputs
 
+    # send the models, inputs to be used to the redis database
     def prepare(self):
-        if self.mut_level == 'i':
+        if self.mut_level == 'i': # input-level mutation
             self.n = len(self.inputs)
             with self.redis_server.pipeline() as pipe: # 1 model, n inputs
                 pipe.hset('model', 0, pickle.dumps(self.model))
                 for i in range(len(self.inputs)):
                     pipe.hset('input', i, pickle.dumps(self.inputs[i]))
                 pipe.execute()
-        elif self.mut_level == 'w':
+                
+        elif self.mut_level == 'w': # weight-level mutation
             self.n = len(self.model_weights)
             with self.redis_server.pipeline() as pipe: # 1 input, n models
                 pipe.hset('input', 0, pickle.dumps(self.inputs[0]))
@@ -39,7 +33,8 @@ class InconsistencyFFunc:
                     self.model.set_weights(self.model_weights[i])
                     pipe.hset('model', i, pickle.dumps(self.model))
                 pipe.execute()
-        elif self.mut_level == 'i+w':
+                
+        elif self.mut_level == 'i+w': # input and weight-level mutation
             assert len(self.model_weights) == len(self.inputs)
             self.n = len(self.inputs)
             with self.redis_server.pipeline() as pipe: # n inputs, n models
@@ -50,13 +45,14 @@ class InconsistencyFFunc:
                     pipe.hset('input', i, pickle.dumps(self.inputs[i]))
                 pipe.execute()
 
+    # get back predictions from redis database and compute the inconsistency fitness values
     def compute(self, layer_idx, epsilon=1e-7):
         P = []
-        # run subprocess to get predictions
-        if self.mut_level == 'i':
+        # run multi-processes to get predictions
+        if self.mut_level == 'i': # input-level mutation
             for i in range(len(self.inputs)):
-                cmd_1 = get_prediction_cmd(self.backend_1, self.db_flag, 0, i, i, layer_idx)
-                cmd_2 = get_prediction_cmd(self.backend_2, self.db_flag, 0, i, i, layer_idx)
+                cmd_1 = get_outputs_cmd(self.backend_1, self.db_flag, 0, i, i, layer_idx)
+                cmd_2 = get_outputs_cmd(self.backend_2, self.db_flag, 0, i, i, layer_idx)
                 p1 = Process(target=lambda: os.system(cmd_1))
                 p2 = Process(target=lambda: os.system(cmd_2))
                 p1.start()
@@ -64,10 +60,10 @@ class InconsistencyFFunc:
                 P.append(p1)
                 P.append(p2)
 
-        elif self.mut_level == 'w':
+        elif self.mut_level == 'w': # weight-level mutation
             for i in range(len(self.model_weights)):
-                cmd_1 = get_prediction_cmd(self.backend_1, self.db_flag, i, 0, i, layer_idx)
-                cmd_2 = get_prediction_cmd(self.backend_2, self.db_flag, i, 0, i, layer_idx)
+                cmd_1 = get_outputs_cmd(self.backend_1, self.db_flag, i, 0, i, layer_idx)
+                cmd_2 = get_outputs_cmd(self.backend_2, self.db_flag, i, 0, i, layer_idx)
                 p1 = Process(target=lambda: os.system(cmd_1))
                 p2 = Process(target=lambda: os.system(cmd_2))
                 p1.start()
@@ -75,10 +71,10 @@ class InconsistencyFFunc:
                 P.append(p1)
                 P.append(p2)
 
-        elif self.mut_level == 'i+w':
+        elif self.mut_level == 'i+w': # input and weight-level mutation
             for i in range(len(self.model_weights)):
-                cmd_1 = get_prediction_cmd(self.backend_1, self.db_flag, i, i, i, layer_idx)
-                cmd_2 = get_prediction_cmd(self.backend_2, self.db_flag, i, i, i, layer_idx)
+                cmd_1 = get_outputs_cmd(self.backend_1, self.db_flag, i, i, i, layer_idx)
+                cmd_2 = get_outputs_cmd(self.backend_2, self.db_flag, i, i, i, layer_idx)
                 p1 = Process(target=lambda: os.system(cmd_1))
                 p2 = Process(target=lambda: os.system(cmd_2))
                 p1.start()
@@ -86,7 +82,7 @@ class InconsistencyFFunc:
                 P.append(p1)
                 P.append(p2)
 
-        for p in P:
+        for p in P: # wait for the processes to be executed
             p.join()
 
         # load predictions
@@ -96,18 +92,20 @@ class InconsistencyFFunc:
                 pipe.hget(f"predictions_{i}", self.backend_2)
             predictions = pipe.execute()
         
-        predictions_1 = predictions[0::2]
+        predictions_1 = predictions[0::2] # predictions by backend_1
         self.predictions_1 = []
         for p in predictions_1:
             p = pickle.loads(p)
-            self.predictions_1.append(p / (np.linalg.norm(p) + epsilon))
+            p = (p - np.min(p)) / (np.max(p) - np.min(p)) # normalize predictions
+            self.predictions_1.append(p)
         self.predictions_1 = np.concatenate(self.predictions_1)
 
-        predictions_2 = predictions[1::2]
+        predictions_2 = predictions[1::2] # predictions by backend_2
         self.predictions_2 = []
         for p in predictions_2:
             p = pickle.loads(p)
-            self.predictions_2.append(p / (np.linalg.norm(p) + epsilon))
+            p = (p - np.min(p)) / (np.max(p) - np.min(p)) # normalize predictions
+            self.predictions_2.append(p)
         self.predictions_2 = np.concatenate(self.predictions_2)
 
         assert len(self.predictions_1) == len(self.predictions_2)
@@ -131,15 +129,17 @@ class NanFFunc:
         self.model_weights = model_weights
         self.inputs = inputs
 
+    # send the models, inputs to be used to the redis database
     def prepare(self):
-        if self.mut_level == 'i':
+        if self.mut_level == 'i': # input-level mutation
             self.n = len(self.inputs)
             with self.redis_server.pipeline() as pipe: # 1 model, n inputs
                 pipe.hset('model', 0, pickle.dumps(self.model))
                 for i in range(len(self.inputs)):
                     pipe.hset('input', i, pickle.dumps(self.inputs[i]))
                 pipe.execute()
-        elif self.mut_level == 'w':
+                
+        elif self.mut_level == 'w': # weight-level mutation
             self.n = len(self.model_weights)
             with self.redis_server.pipeline() as pipe: # 1 input, n models
                 pipe.hset('input', 0, pickle.dumps(self.inputs[0]))
@@ -147,7 +147,8 @@ class NanFFunc:
                     self.model.set_weights(self.model_weights[i])
                     pipe.hset('model', i, pickle.dumps(self.model))
                 pipe.execute()
-        elif self.mut_level == 'i+w':
+                
+        elif self.mut_level == 'i+w': # input and weight-level mutation
             assert len(self.model_weights) == len(self.inputs)
             self.n = len(self.inputs)
             with self.redis_server.pipeline() as pipe: # n inputs, n models
@@ -158,32 +159,32 @@ class NanFFunc:
                     pipe.hset('input', i, pickle.dumps(self.inputs[i]))
                 pipe.execute()
     
+    # get back predictions from redis database and compute the nan fitness values
     def compute(self, layer_idx, epsilon=1e-7):
         P = []
-        # run subprocess to get predictions
-        if self.mut_level == 'i':
+        # run multi-processes to get predictions
+        if self.mut_level == 'i': # input-level mutation
             for i in range(len(self.inputs)):
-                cmd_1 = get_prediction_cmd(self.backend, self.db_flag, 0, i, i, layer_idx)
+                cmd_1 = get_outputs_cmd(self.backend, self.db_flag, 0, i, i, layer_idx)
                 p1 = Process(target=lambda: os.system(cmd_1))
                 p1.start()
                 P.append(p1)
 
-        elif self.mut_level == 'w':
+        elif self.mut_level == 'w': # weight-level mutation
             for i in range(len(self.model_weights)):
-                cmd_1 = get_prediction_cmd(self.backend, self.db_flag, i, 0, i, layer_idx)
+                cmd_1 = get_outputs_cmd(self.backend, self.db_flag, i, 0, i, layer_idx)
                 p1 = Process(target=lambda: os.system(cmd_1))
                 p1.start()
                 P.append(p1)
 
-        elif self.mut_level == 'i+w':
+        elif self.mut_level == 'i+w': # input and weight-level mutation
             for i in range(len(self.model_weights)):
-                cmd_1 = get_prediction_cmd(self.backend, self.db_flag, i, i, i, layer_idx)
+                cmd_1 = get_outputs_cmd(self.backend, self.db_flag, i, i, i, layer_idx)
                 p1 = Process(target=lambda: os.system(cmd_1))
                 p1.start()
                 P.append(p1)
 
-        
-        for p in P:
+        for p in P: # wait processes to be executed
             p.join()
 
         # load predictions

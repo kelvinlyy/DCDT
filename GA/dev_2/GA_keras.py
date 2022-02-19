@@ -46,7 +46,7 @@ class GA:
             input_shape = self.input.shape
             formatted_P = []
             for p in P:
-                formatted_P.append(p.reshape(input_shape))
+                formatted_P.append(p.reshape(input_shape) * self.input_scale)
 
         elif self.mut_level == 'w':
             model_weights = self.model.get_weights()
@@ -65,7 +65,7 @@ class GA:
             formatted_P = []
             for p in P:
                 i = np.prod(input_shape)
-                population_input = p[:i].reshape(input_shape)
+                population_input = p[:i].reshape(input_shape) * self.input_scale
                 population_weights = []
                 for w in model_weights:
                     population_weights.append(p[i:i+np.prod(w.shape)].reshape(w.shape))
@@ -119,11 +119,11 @@ class GA:
         formatted_P = self.formatPopulations(P)
 
         if self.mut_level == 'i':
-            self.FFunc = FFunc(self.redis_server, self.db_flag, self.mut_level, self.backends, self.model, None, formatted_P * 255)
+            self.FFunc = FFunc(self.redis_server, self.db_flag, self.mut_level, self.backends, self.model, None, formatted_P)
         elif self.mut_level == 'w':
             self.FFunc = FFunc(self.redis_server, self.db_flag, self.mut_level, self.backends, self.model, formatted_P, [self.input])
         elif self.mut_level == 'i+w':
-            i_P = np.stack(formatted_P[:,0]) * 255# input population
+            i_P = np.stack(formatted_P[:,0]) # input population
             w_P = np.stack(formatted_P[:,1]) # weight population
             self.FFunc = FFunc(self.redis_server, self.db_flag, self.mut_level, self.backends, self.model, w_P, i_P)
 
@@ -136,6 +136,7 @@ class GA:
 
     # select m candidates for parents of next-generation inputs
     def select(self, m, Fit):
+        Fit = np.nan_to_num(Fit, -1)
         selected_index = np.argpartition(Fit, -m)[-m:]
         P_prime = self.P[selected_index]
         return P_prime
@@ -170,6 +171,11 @@ class GA:
                 for i in range(self.n):
                     pipe.hget(f"errors_{i}", self.backends[0])
                 errors = pipe.execute()
+                
+            for i in range(len(errors)):
+                e = pickle.loads(errors[i])
+                if e != []:
+                    F.append([e, self.backends[0], self.P[i]])
     
         elif self.fit_func == 'inc':
             with self.redis_server.pipeline() as pipe:
@@ -177,11 +183,17 @@ class GA:
                     pipe.hget(f"errors_{i}", self.backends[0])
                     pipe.hget(f"errors_{i}", self.backends[1])
                 errors = pipe.execute()
-
-        for e in errors:
-            e = pickle.loads(e)
-            if e != []:
-                F.append([e, self.P])
+                
+            for i in range(self.n):
+                e1 = pickle.loads(errors[i*2])
+                e2 = pickle.loads(errors[i*2+1])
+                if e1 != [] and e2 != []:
+                    F.append([[e1, e2], self.P[i]])
+                elif e1 != []:
+                    F.append([[e1], self.P[i]])
+                elif e2 != []:
+                    F.append([[e2],self.P[i]])
+       
 
         return F
 
@@ -213,7 +225,7 @@ def ga_main(fit, mut_level, model, x, input_scale, init_noise, r1, r2, r3, m, n,
 
         X = ga.checkFailed()
         if X != []:
-            ga.F.append(X)
+            ga.F.extend(X)
 
         ga.P = np.array(P_pp)
         end_time = time.time()
