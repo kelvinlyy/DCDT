@@ -1,5 +1,5 @@
 import coverage
-import keras
+from tensorflow import keras
 import pandas as pd
 
 def lines2Vector(lines):
@@ -36,10 +36,12 @@ def total_lines(covList):
 
 def delta_lines(covList1, covList2):
     cnt = 0
-    for files in range(len(covList1)):
-        for item in covList1[files][1]:
-            if item not in covList2[files][1]:
-                cnt += 1            
+    for files in range(len(origin_cov_table)):
+        a = set(origin_cov_table[files][1])
+        b = set(test_table[files][1])
+        cnt += len(a.difference(b))
+        cnt += len(b.difference(a))    
+        
     return cnt
 
 # class Class_Function:    
