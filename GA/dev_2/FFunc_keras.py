@@ -4,7 +4,7 @@ import numpy as np
 import pickle
 from kerasPredictCMD import get_outputs_cmd
 
-
+P_NUM = 8 # number of processes running simultaneously
 class InconsistencyFFunc:
     def __init__(self, redis_server, db_flag, mut_level, backends, model, model_weights, inputs):
         self.redis_server = redis_server
@@ -59,6 +59,11 @@ class InconsistencyFFunc:
                 p2.start()
                 P.append(p1)
                 P.append(p2)
+                if (i+1)%(P_NUM//2) == 0:
+                    for p in P:
+                        p.join()
+
+
 
         elif self.mut_level == 'w': # weight-level mutation
             for i in range(len(self.model_weights)):
@@ -70,6 +75,9 @@ class InconsistencyFFunc:
                 p2.start()
                 P.append(p1)
                 P.append(p2)
+                if (i+1)%(P_NUM//2) == 0:
+                    for p in P:
+                        p.join()
 
         elif self.mut_level == 'i+w': # input and weight-level mutation
             for i in range(len(self.model_weights)):
@@ -81,6 +89,9 @@ class InconsistencyFFunc:
                 p2.start()
                 P.append(p1)
                 P.append(p2)
+                if (i+1)%(P_NUM//2) == 0:
+                    for p in P:
+                        p.join()
 
         for p in P: # wait for the processes to be executed
             p.join()
