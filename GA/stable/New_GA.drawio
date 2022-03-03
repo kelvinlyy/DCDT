@@ -1,1 +1,25 @@
-<mxfile host="app.diagrams.net" modified="2022-03-02T12:48:49.039Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.3 Safari/605.1.15" version="16.6.2" etag="coHN5IOkDUcIRVl-XhyQ" type="github"><diagram id="JLM1wtBPSGJVh0zKI4de">UzV2zq1wL0osyPDNT0nNUTV2VTV2LsrPL4GwciucU3NyVI0MMlNUjV1UjYwMgFjVyA2HrCFY1qAgsSg1rwSLBiADYTaQg2Y1AA==</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2022-03-03T07:15:43.554Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.3 Safari/605.1.15" etag="GkGrQ7bXyfAGiKGH1iJx" version="16.6.2" type="github">
+  <diagram id="JLM1wtBPSGJVh0zKI4de" name="Page-1">
+    <mxGraphModel dx="656" dy="606" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="BKVOe5ch2QeVNIPZ96-O-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="BKVOe5ch2QeVNIPZ96-O-1" target="BKVOe5ch2QeVNIPZ96-O-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="BKVOe5ch2QeVNIPZ96-O-1" value="Find mutation scale for each layer (weight-level)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="120" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="BKVOe5ch2QeVNIPZ96-O-7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=none;endFill=0;" edge="1" parent="1" source="BKVOe5ch2QeVNIPZ96-O-2" target="BKVOe5ch2QeVNIPZ96-O-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="BKVOe5ch2QeVNIPZ96-O-2" value="GA" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="220" y="260" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="BKVOe5ch2QeVNIPZ96-O-6" value="mutate dynamically for each layer" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="420" y="260" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
