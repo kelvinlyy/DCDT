@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2022-03-20T17:27:24.367Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4 Safari/605.1.15" etag="6qjOiuxU2Hs7ifCoBLrV" version="17.1.3" type="github">
+<mxfile host="app.diagrams.net" modified="2022-03-20T17:28:40.002Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4 Safari/605.1.15" etag="elzJY06XzIKYdiK8EQNM" version="17.1.3" type="github">
   <diagram id="OgELY9Nip8va4N-qjmbU" name="Page-1">
     <mxGraphModel dx="716" dy="513" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -37,7 +37,7 @@
           <mxGeometry x="210" y="215" width="120" height="30" as="geometry" />
         </mxCell>
         <mxCell id="CjiWC_ZyUrN55SHUi5Jo-17" value="Solution" style="swimlane;" vertex="1" parent="1">
-          <mxGeometry x="70" y="520" width="720" height="560" as="geometry" />
+          <mxGeometry x="70" y="520" width="720" height="610" as="geometry" />
         </mxCell>
         <mxCell id="CjiWC_ZyUrN55SHUi5Jo-18" value="TF/Keras model&lt;br&gt;with n layers" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="CjiWC_ZyUrN55SHUi5Jo-17">
           <mxGeometry x="45" y="45" width="120" height="60" as="geometry" />
@@ -173,6 +173,12 @@
         </mxCell>
         <mxCell id="CjiWC_ZyUrN55SHUi5Jo-60" value="&lt;font style=&quot;font-size: 12px&quot;&gt;Compare outputs&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=9;" vertex="1" parent="CjiWC_ZyUrN55SHUi5Jo-17">
           <mxGeometry x="390" y="420" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="CjiWC_ZyUrN55SHUi5Jo-65" value="&lt;font style=&quot;font-size: 12px&quot;&gt;Localise inconsistencies on layer-level&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=9;" vertex="1" parent="CjiWC_ZyUrN55SHUi5Jo-17">
+          <mxGeometry x="390" y="520" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="CjiWC_ZyUrN55SHUi5Jo-66" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;" edge="1" parent="CjiWC_ZyUrN55SHUi5Jo-17" source="CjiWC_ZyUrN55SHUi5Jo-60" target="CjiWC_ZyUrN55SHUi5Jo-65">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
