@@ -1,4 +1,3 @@
-from tkinter import E
 import keras
 import redis
 import pickle
@@ -262,16 +261,16 @@ class GA:
 
 
 def ga_main(fit, mut_level, model, x, input_scale, init_noise, r1, r2, r3, m, n, layer_idx, db_flag, maxIter, dynamicWeightMutDecay=0, ga=None):
+    sstart_time = time.time()
     if ga == None:
         ga = GA(fit, mut_level, model, x, input_scale, db_flag)
         ga.initPopulation(init_noise, n)
-        
+        ga.initDynamicWeightMutation(r3)
     else:
         print('Continuing from the previous populations...')
         print()
         
     if dynamicWeightMutDecay != 0:
-        ga.initDynamicWeightMutation(r3)
         if dynamicWeightMutDecay < 1:
             warnings.warn("Warning for dynamicWeightMutDecay value: value less than 1 does not produce more diverse nan layers")
             
@@ -302,10 +301,15 @@ def ga_main(fit, mut_level, model, x, input_scale, init_noise, r1, r2, r3, m, n,
 
 
             ga.P = np.array(P_pp)
-            end_time = time.time()
-
+            
+        end_time = time.time()
         print('Average fitness value: {}'.format(np.mean(Fit)))
         print('Time taken: {}'.format(end_time - start_time))
         print()
+    
+    
+    print()
+    print('Total time taken:', end_time - sstart_time)
+    
     return ga
         
