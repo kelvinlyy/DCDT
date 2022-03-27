@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2022-02-19T04:24:48.947Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.3 Safari/605.1.15" etag="0TMDbJ0YvhOtxiCN4N_r" version="16.5.6" type="github">
+<mxfile host="app.diagrams.net" modified="2022-03-03T07:15:33.803Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.3 Safari/605.1.15" etag="I7UhI61Pc6DthbTLaS2J" version="16.6.2" type="github">
   <diagram id="KMrJF5xkyydDern5e_y1" name="Page-1">
-    <mxGraphModel dx="899" dy="613" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="656" dy="606" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -140,7 +140,7 @@
         <mxCell id="ZWeKVcOg7MyMfSJs-o2y-39" value="If the layers&lt;br&gt;in the 2&lt;br&gt;frameworks&lt;br&gt;are identical" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="ZWeKVcOg7MyMfSJs-o2y-25" target="ZWeKVcOg7MyMfSJs-o2y-38" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-25" value="Layers with NaN in the 2 frameworks" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-25" value="Layers with NaN in the 2 frameworks" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
           <mxGeometry x="162" y="270" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="ZWeKVcOg7MyMfSJs-o2y-33" value="else" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="ZWeKVcOg7MyMfSJs-o2y-26" target="ZWeKVcOg7MyMfSJs-o2y-32" edge="1">
@@ -169,7 +169,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-43" value="Find the set difference of the &lt;br&gt;NaN layers" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;labelBorderColor=none;" parent="1" vertex="1">
+        <mxCell id="ZWeKVcOg7MyMfSJs-o2y-43" value="Find the set difference of the &lt;br&gt;NaN layers" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;labelBorderColor=none;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
           <mxGeometry x="162" y="390" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="ZWeKVcOg7MyMfSJs-o2y-47" value="Remove Chromosome" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;labelBorderColor=none;" parent="1" vertex="1">
