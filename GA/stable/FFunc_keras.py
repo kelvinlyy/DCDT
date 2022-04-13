@@ -2,9 +2,84 @@ from multiprocessing import Process
 import os
 import numpy as np
 import pickle
-from kerasPredictCMD import get_outputs_cmd
+from kerasPredictCMD import get_outputs_cmd, get_coverage_cmd
+
 
 P_NUM = 8 # number of processes running simultaneously
+
+class CoverageFFunc:
+    def __init__(self, redis_server, db_flag, mut_level, backend, model, model_weights, inputs):
+        self.redis_server = redis_server
+        self.db_flag = db_flag
+
+        self.mut_level = mut_level
+        self.backend = backend[0]
+        self.model = model
+        self.model_weights = model_weights
+        self.inputs = inputs
+
+    # send the models, inputs to be used to the redis database
+    def prepare(self):
+        if self.mut_level == 'i': # input-level mutation
+            self.n = len(self.inputs)
+            with self.redis_server.pipeline() as pipe: # 1 model, n inputs
+                pipe.hset('model', 0, pickle.dumps(self.model))
+                for i in range(len(self.inputs)):
+                    pipe.hset('input', i, pickle.dumps(self.inputs[i]))
+                pipe.execute()
+                
+        elif self.mut_level == 'w': # weight-level mutation
+            self.n = len(self.model_weights)
+            with self.redis_server.pipeline() as pipe: # 1 input, n models
+                pipe.hset('input', 0, pickle.dumps(self.inputs[0]))
+                for i in range(len(self.model_weights)):
+                    self.model.set_weights(self.model_weights[i])
+                    pipe.hset('model', i, pickle.dumps(self.model))
+                pipe.execute()
+                
+        elif self.mut_level == 'i+w': # input and weight-level mutation
+            assert len(self.model_weights) == len(self.inputs)
+            self.n = len(self.inputs)
+            with self.redis_server.pipeline() as pipe: # n inputs, n models
+                for i in range(len(self.model_weights)):
+                    self.model.set_weights(self.model_weights[i])
+                    pipe.hset('model', i, pickle.dumps(self.model))
+                for i in range(len(self.inputs)):
+                    pipe.hset('input', i, pickle.dumps(self.inputs[i]))
+                pipe.execute()
+
+    # get back predictions from redis database and compute the inconsistency fitness values
+    def compute(self, layer_idx, epsilon=1e-7):
+        P = []
+        # run multi-processes to get predictions
+        if self.mut_level == 'i': # input-level mutation
+            for i in range(len(self.inputs)):
+                cmd_1 = get_coverage_cmd(self.backend, self.db_flag, 0, i, i)
+                os.system(cmd_1)
+
+        elif self.mut_level == 'w': # weight-level mutation
+            for i in range(len(self.model_weights)):
+                cmd_1 = get_coverage_cmd(self.backend, self.db_flag, i, 0, i)
+                os.system(cmd_1)
+
+        elif self.mut_level == 'i+w': # input and weight-level mutation
+            for i in range(len(self.model_weights)):
+                cmd_1 = get_coverage_cmd(self.backend, self.db_flag, i, i, i)
+                os.system(cmd_1)
+
+        # load predictions
+        with self.redis_server.pipeline() as pipe:
+            for i in range(self.n):
+                pipe.hget(f"coverage_{i}", self.backend)
+            coverages = pipe.execute()
+            
+        self.fitness_values = []
+        for c in coverages:
+            c = pickle.loads(c)
+            self.fitness_values.append(c)
+            
+        return self.fitness_values
+    
 class InconsistencyFFunc:
     def __init__(self, redis_server, db_flag, mut_level, backends, model, model_weights, inputs):
         self.redis_server = redis_server
@@ -62,6 +137,8 @@ class InconsistencyFFunc:
                 if (i+1)%(P_NUM//2) == 0:
                     for p in P:
                         p.join()
+                        
+                    P = []
 
 
 
@@ -78,6 +155,8 @@ class InconsistencyFFunc:
                 if (i+1)%(P_NUM//2) == 0:
                     for p in P:
                         p.join()
+                        
+                    P = []
 
         elif self.mut_level == 'i+w': # input and weight-level mutation
             for i in range(len(self.model_weights)):
@@ -92,6 +171,8 @@ class InconsistencyFFunc:
                 if (i+1)%(P_NUM//2) == 0:
                     for p in P:
                         p.join()
+                        
+                    P = []
 
         for p in P: # wait for the processes to be executed
             p.join()
