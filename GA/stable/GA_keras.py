@@ -4,7 +4,7 @@ import pickle
 import numpy as np
 import random
 import time
-from FFunc_keras import InconsistencyFFunc, NanFFunc
+from FFunc_keras import InconsistencyFFunc, NanFFunc, CoverageFFunc
 import os
 import warnings
 
@@ -85,7 +85,11 @@ class GA:
                 if l_w != []:
                     current_pos += len(np.hstack(l_w))
 
-                self.layers_r3.append([start_pos,current_pos, r3])
+                if l.__class__.__name__ == 'BatchNormalization': # proved to be intolerant to weight change
+                    self.layers_r3.append([start_pos,current_pos, 0])
+                else:
+                    self.layers_r3.append([start_pos,current_pos, r3])
+
         elif self.mut_level == 'i+w':
             current_pos = np.prod(self.input.shape)
             for l in self.model.layers:
@@ -94,7 +98,10 @@ class GA:
                 if l_w != []:
                     current_pos += len(np.hstack(l_w))
 
-                self.layers_r3.append([start_pos,current_pos, r3])
+                if l.__class__.__name__ == 'BatchNormalization': # proved to be intolerant to weight change
+                    self.layers_r3.append([start_pos,current_pos, 0])
+                else:
+                    self.layers_r3.append([start_pos,current_pos, r3])
             
         return self.layers_r3
     
@@ -139,6 +146,8 @@ class GA:
             FFunc = NanFFunc
         elif self.fit_func == 'inc':
             FFunc = InconsistencyFFunc
+        elif self.fit_func == 'cov':
+            FFunc = CoverageFFunc
 
         formatted_P = self.formatPopulations(P)
 
@@ -196,6 +205,7 @@ class GA:
         x_pp = []
         if self.mut_level == 'i':
             x_pp = np.clip(x_prime + np.random.standard_cauchy(x_prime.shape) * np.random.choice(2, x_prime.shape, p=[1-r2, r2]) * r3, 0, 1)
+            
         elif self.mut_level == 'w':
             for l in self.layers_r3:
                 start_pos, end_pos, r3 = l
@@ -203,6 +213,7 @@ class GA:
                     l_weights = x_prime[start_pos:end_pos]
                     x_pp.append(l_weights + np.random.standard_cauchy(l_weights.shape) * np.random.choice(2, l_weights.shape, p=[1-r2, r2]) * r3)
             x_pp = np.hstack(x_pp)
+            
         elif self.mut_level == 'i+w':
             i = np.prod(self.input.shape)
             x_pp1 = np.clip(x_prime[:i] + np.random.standard_cauchy(x_prime[:i].shape) * np.random.choice(2, x_prime[:i].shape, p=[1-r2, r2]) * r3, 0, 1)
@@ -253,15 +264,17 @@ class GA:
                 elif e2 != []:
                     F.append([[e2],self.P[i]])
                     
+        elif self.fit_func == 'cov':
+            # TODO: if there is change in coverage, return line difference
                     
-       
+                    
 
         return F
 
 
 
 def ga_main(fit, mut_level, model, x, input_scale, init_noise, r1, r2, r3, m, n, layer_idx, db_flag, maxIter, dynamicWeightMutDecay=0, ga=None):
-    sstart_time = time.time()
+    start_time = time.time()
     if ga == None:
         ga = GA(fit, mut_level, model, x, input_scale, db_flag)
         ga.initPopulation(init_noise, n)
@@ -277,7 +290,7 @@ def ga_main(fit, mut_level, model, x, input_scale, init_noise, r1, r2, r3, m, n,
     prev_iter = len(ga.fit_hist)
     for i in range(prev_iter, prev_iter + maxIter):
         print(f'Running at iteration {i+1}:')
-        start_time = time.time()
+        iter_start_time = time.time()
         ga.prepareFitness(ga.P)
         Fit = ga.computeFitness(layer_idx)
         ga.fit_hist.append(Fit)
@@ -304,12 +317,12 @@ def ga_main(fit, mut_level, model, x, input_scale, init_noise, r1, r2, r3, m, n,
             
         end_time = time.time()
         print('Average fitness value: {}'.format(np.mean(Fit)))
-        print('Time taken: {}'.format(end_time - start_time))
+        print('Time taken: {}'.format(end_time - iter_start_time))
         print()
     
     
     print()
-    print('Total time taken:', end_time - sstart_time)
+    print('Total time taken:', end_time - start_time)
     
     return ga
         
