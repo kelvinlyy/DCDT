@@ -263,11 +263,6 @@ class GA:
                     F.append([[e1], self.P[i]])
                 elif e2 != []:
                     F.append([[e2],self.P[i]])
-                    
-        elif self.fit_func == 'cov':
-            # TODO: if there is change in coverage, return line difference
-                    
-                    
 
         return F
 
@@ -278,14 +273,14 @@ def ga_main(fit, mut_level, model, x, input_scale, init_noise, r1, r2, r3, m, n,
     if ga == None:
         ga = GA(fit, mut_level, model, x, input_scale, db_flag)
         ga.initPopulation(init_noise, n)
-        ga.initDynamicWeightMutation(r3)
+        if dynamicWeightMutDecay: 
+            ga.initDynamicWeightMutation(r3)
     else:
         print('Continuing from the previous populations...')
         print()
         
-    if dynamicWeightMutDecay != 0:
-        if dynamicWeightMutDecay < 1:
-            warnings.warn("Warning for dynamicWeightMutDecay value: value less than 1 does not produce more diverse nan layers")
+    if dynamicWeightMutDecay < 1:
+        warnings.warn("Warning for dynamicWeightMutDecay value: value less than 1 does not produce more diverse nan layers")
             
     prev_iter = len(ga.fit_hist)
     for i in range(prev_iter, prev_iter + maxIter):
@@ -302,24 +297,24 @@ def ga_main(fit, mut_level, model, x, input_scale, init_noise, r1, r2, r3, m, n,
             while len(P_pp) < n:
                 x1, x2 = ga.selectParents(P_prime)
                 x_prime = ga.crossover(x1, x2, r1)
+                
                 if dynamicWeightMutDecay != 0:
                     x_pp = ga.dynamicMutate(x_prime, r2, r3)
                 else:
                     x_pp = ga.mutate(x_prime, r2, r3)
+                    
                 P_pp.append(x_pp)
 
             X = ga.checkFailed(dynamicWeightMutDecay)
             if X != []:
                 ga.F.extend(X)
-
-
+                
             ga.P = np.array(P_pp)
             
         end_time = time.time()
         print('Average fitness value: {}'.format(np.mean(Fit)))
         print('Time taken: {}'.format(end_time - iter_start_time))
         print()
-    
     
     print()
     print('Total time taken:', end_time - start_time)
