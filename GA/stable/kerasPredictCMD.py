@@ -1,7 +1,9 @@
 py_env = "/data/yylaiai/anaconda3/envs/audee_test/bin/python"
-get_outputs_py = "get_outputs_keras.py"
-get_prediction_py = "get_prediction_keras.py"
-get_coverage_py = "get_coverage_keras.py"
+predictUtil_path = "predictUtil"
+
+get_outputs_py = f"{predictUtil_path}/get_outputs_keras.py"
+get_prediction_py = f"{predictUtil_path}/get_prediction_keras.py"
+get_coverage_py = f"{predictUtil_path}/get_coverage_keras.py"
 
 
 # generate command for computing intermediate outputs
