@@ -115,7 +115,7 @@ class InconsistencyFFunc:
         self.predictions_1 = []
         for p in predictions_1:
             p = pickle.loads(p)
-            p = (p - np.min(p)) / (np.max(p) - np.min(p) + epsilon) # normalize predictions
+#             p = (p - np.min(p)) / (np.max(p) - np.min(p) + epsilon) # normalize predictions
             self.predictions_1.append(p)
         self.predictions_1 = np.squeeze(np.stack(self.predictions_1))
 
@@ -123,7 +123,7 @@ class InconsistencyFFunc:
         self.predictions_2 = []
         for p in predictions_2:
             p = pickle.loads(p)
-            p = (p - np.min(p)) / (np.max(p) - np.min(p) + epsilon) # normalize predictions
+#             p = (p - np.min(p)) / (np.max(p) - np.min(p) + epsilon) # normalize predictions
             self.predictions_2.append(p)
         self.predictions_2 = np.squeeze(np.stack(self.predictions_2))
 
