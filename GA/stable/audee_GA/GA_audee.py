@@ -4,10 +4,11 @@ import pickle
 import numpy as np
 import random
 import time
-from FFunc_keras import InconsistencyFFunc, NanFFunc, CoverageFFunc
+from FFunc_keras import InconsistencyFFunc, NanFFunc
 import os
 import warnings
 
+os.environ['CUDA_VISIBLE_DEVICES'] = ''
 # input should be in range [0,1)
 # populations: in flattened shape
 # formatted_populations: in normal shape
@@ -20,6 +21,7 @@ class GA:
         new_model = keras.models.clone_model(model)
         new_model.set_weights(model.get_weights()) # clone_model does not clone the weights
         self.model = new_model
+        self.model.predict(x[None,:])
         
         self.input = x
         self.input_scale = input_scale # {1, 255}
@@ -74,37 +76,6 @@ class GA:
 
         return np.array(formatted_P, dtype=object)
     
-    # label the mutation rate, starting and ending index of each layers in the model weight chromosome
-    def initDynamicWeightMutation(self, r3):
-        current_pos = 0
-        self.layers_r3 = []
-        if self.mut_level == 'w':
-            for l in self.model.layers:
-                start_pos = current_pos
-                l_w = [i.ravel() for i in l.get_weights()]
-                if l_w != []:
-                    current_pos += len(np.hstack(l_w))
-
-                if l.__class__.__name__ == 'BatchNormalization': # proved to be intolerant to weight change
-                    self.layers_r3.append([start_pos,current_pos, 0])
-                else:
-                    self.layers_r3.append([start_pos,current_pos, r3])
-
-        elif self.mut_level == 'i+w':
-            current_pos = np.prod(self.input.shape)
-            for l in self.model.layers:
-                start_pos = current_pos
-                l_w = [i.ravel() for i in l.get_weights()]
-                if l_w != []:
-                    current_pos += len(np.hstack(l_w))
-
-                if l.__class__.__name__ == 'BatchNormalization': # proved to be intolerant to weight change
-                    self.layers_r3.append([start_pos,current_pos, 0])
-                else:
-                    self.layers_r3.append([start_pos,current_pos, r3])
-            
-        return self.layers_r3
-    
     # initialzie and flatten populations
     def initPopulation(self, init_noise, n):
         self.n = n
@@ -146,8 +117,6 @@ class GA:
             FFunc = NanFFunc
         elif self.fit_func == 'inc':
             FFunc = InconsistencyFFunc
-        elif self.fit_func == 'cov':
-            FFunc = CoverageFFunc
 
         formatted_P = self.formatPopulations(P)
 
@@ -188,49 +157,22 @@ class GA:
         return x_prime
 
     # mutate the crossover product
-    def mutate(self, x_prime, r2, r3):
+    def mutate(self, x_prime, r3):
         if self.mut_level == 'i':
-            x_pp = np.clip(x_prime + np.random.standard_cauchy(x_prime.shape) * np.random.choice(2, x_prime.shape, p=[1-r2, r2]) * r3, 0, 1)
+            x_pp = np.clip(x_prime + np.random.standard_cauchy(x_prime.shape) * r3, 0, 1)
+            return x_pp
         elif self.mut_level == 'w':
-            x_pp = x_prime + np.random.standard_cauchy(x_prime.shape) * np.random.choice(2, x_prime.shape, p=[1-r2, r2]) * r3
+            x_pp = x_prime + np.random.standard_cauchy(x_prime.shape) * r3
+            return x_pp
         elif self.mut_level == 'i+w':
             i = np.prod(self.input.shape)
-            x_pp1 = np.clip(x_prime[:i] + np.random.standard_cauchy(x_prime[:i].shape) * np.random.choice(2, x_prime[:i].shape, p=[1-r2, r2]) * r3, 0, 1)
-            x_pp2 = x_prime[i:] + np.random.standard_cauchy(x_prime[i:].shape) * np.random.choice(2, x_prime[i:].shape, p=[1-r2, r2]) * r3
+            x_pp1 = np.clip(x_prime[:i] + np.random.standard_cauchy(x_prime[:i].shape) * r3, 0, 1)
+            x_pp2 = x_prime[i:] + np.random.standard_cauchy(x_prime[i:].shape) * r3
             
-        return np.hstack([x_pp1, x_pp2])
-    
-    # dynamically mutate the crossover product except for input-level mutation
-    def dynamicMutate(self, x_prime, r2, r3):
-        x_pp = []
-        if self.mut_level == 'i':
-            x_pp = np.clip(x_prime + np.random.standard_cauchy(x_prime.shape) * np.random.choice(2, x_prime.shape, p=[1-r2, r2]) * r3, 0, 1)
-            
-        elif self.mut_level == 'w':
-            for l in self.layers_r3:
-                start_pos, end_pos, r3 = l
-                if start_pos != end_pos: # if there is weight in the layer
-                    l_weights = x_prime[start_pos:end_pos]
-                    x_pp.append(l_weights + np.random.standard_cauchy(l_weights.shape) * np.random.choice(2, l_weights.shape, p=[1-r2, r2]) * r3)
-            x_pp = np.hstack(x_pp)
-            
-        elif self.mut_level == 'i+w':
-            i = np.prod(self.input.shape)
-            x_pp1 = np.clip(x_prime[:i] + np.random.standard_cauchy(x_prime[:i].shape) * np.random.choice(2, x_prime[:i].shape, p=[1-r2, r2]) * r3, 0, 1)
-            x_pp.append(x_pp1)
-                                
-            for l in self.layers_r3:
-                start_pos, end_pos, r3 = l
-                if start_pos != end_pos: # if there is weight in the layer
-                    l_weights = x_prime[start_pos:end_pos]
-                    x_pp.append(l_weights + np.random.standard_cauchy(l_weights.shape) * np.random.choice(2, l_weights.shape, p=[1-r2, r2]) * r3)
-                                
-            x_pp = np.hstack(x_pp)
-            
-        return x_pp
+            return np.hstack([x_pp1, x_pp2])
 
     # only check nan and crash error
-    def checkFailed(self, dynamicWeightMutDecay): # check the populations from the previous iteration
+    def checkFailed(self): # check the populations from the previous iteration
         F = []
         if self.fit_func == 'nan':
             with self.redis_server.pipeline() as pipe:
@@ -254,38 +196,32 @@ class GA:
                 e1 = pickle.loads(errors[i*2])
                 e2 = pickle.loads(errors[i*2+1])
                 if e1 != [] and e2 != []:
-                    if dynamicWeightMutDecay != 0:
-                        if e1[0] == 'nan' and e2[0] == 'nan':
-                            first_nan = min(e1[2][0], e2[2][0])
-                            self.layers_r3[first_nan][2] /= dynamicWeightMutDecay
                     F.append([[e1, e2], self.P[i]])
                 elif e1 != []:
                     F.append([[e1], self.P[i]])
                 elif e2 != []:
                     F.append([[e2],self.P[i]])
+                    
+                    
+       
 
         return F
 
 
 
-def ga_main(fit, mut_level, model, x, input_scale, init_noise, r1, r2, r3, m, n, layer_idx, db_flag, maxIter, dynamicWeightMutDecay=0, ga=None):
-    start_time = time.time()
+def ga_main(fit, mut_level, model, x, input_scale, init_noise, r1, r2, r3, m, n, layer_idx, db_flag, maxIter, ga=None):
+    sstart_time = time.time()
     if ga == None:
         ga = GA(fit, mut_level, model, x, input_scale, db_flag)
         ga.initPopulation(init_noise, n)
-        if dynamicWeightMutDecay: 
-            ga.initDynamicWeightMutation(r3)
     else:
         print('Continuing from the previous populations...')
         print()
-        
-    if dynamicWeightMutDecay < 1:
-        warnings.warn("Warning for dynamicWeightMutDecay value: value less than 1 does not produce more diverse nan layers")
             
     prev_iter = len(ga.fit_hist)
     for i in range(prev_iter, prev_iter + maxIter):
         print(f'Running at iteration {i+1}:')
-        iter_start_time = time.time()
+        start_time = time.time()
         ga.prepareFitness(ga.P)
         Fit = ga.computeFitness(layer_idx)
         ga.fit_hist.append(Fit)
@@ -297,27 +233,25 @@ def ga_main(fit, mut_level, model, x, input_scale, init_noise, r1, r2, r3, m, n,
             while len(P_pp) < n:
                 x1, x2 = ga.selectParents(P_prime)
                 x_prime = ga.crossover(x1, x2, r1)
-                
-                if dynamicWeightMutDecay != 0:
-                    x_pp = ga.dynamicMutate(x_prime, r2, r3)
-                else:
-                    x_pp = ga.mutate(x_prime, r2, r3)
-                    
-                P_pp.append(x_pp)
+                r = random.uniform(0, 1)
+                if r < r2:
+                    x_pp = ga.mutate(x_prime, r3)
+                    P_pp.append(x_pp)
 
-            X = ga.checkFailed(dynamicWeightMutDecay)
+            X = ga.checkFailed()
             if X != []:
                 ga.F.extend(X)
-                
+
             ga.P = np.array(P_pp)
             
         end_time = time.time()
         print('Average fitness value: {}'.format(np.mean(Fit)))
-        print('Time taken: {}'.format(end_time - iter_start_time))
+        print('Time taken: {}'.format(end_time - start_time))
         print()
     
+    
     print()
-    print('Total time taken:', end_time - start_time)
+    print('Total time taken:', end_time - sstart_time)
     
     return ga
         

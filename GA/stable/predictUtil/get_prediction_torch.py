@@ -50,16 +50,16 @@ r = redis.Redis(db=db_flag)
 model = pickle.loads(r.hget("model", model_key))
 x = pickle.loads(r.hget("input", input_key))
 
-# ensure inputs is 4-dimensional
-if len(x.shape) == 3:
-    x = x[None,:]
+# duplicate and stack 2 x together
+# Reason: BatchNorm may result in error when the batch only contains a single sample 
+x = np.tile(x, (2, 1, 1, 1))
     
 # convert tf to torch
 model_torch = convert_tf2torch(model, 'tf_model', layer_idx)
 x_torch = torch.from_numpy(x.astype(np.float32))
 
 # do predictions
-predictions = model_torch(x_torch)
+predictions = model_torch(x_torch)[0]
 r.hset(f"predictions_{layer_idx}", 'torch', pickle.dumps(predictions))
 
 
