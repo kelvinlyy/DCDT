@@ -1,0 +1,40 @@
+layer_name,add_function,input_shape,para_num
+Dense,addDense,"[1, 2, 3, 4, 5, 6]",1
+Conv2D,addConv2D,[3],4
+BatchNormalization,addBatchNorm,"[1, 2, 3, 4, 5, 6]",2
+MaxPooling2D,addMaxPool,[3],2
+Dropout,addDropout,"[1, 2, 3, 4, 5, 6]",2
+Activation,addActivation,"[1, 2, 3, 4, 5, 6]",1
+ZeroPadding2D,addZeroPadd,[3],1
+AveragePooling1D,addAverPool1D,[2],2
+AveragePooling2D,addAverPool2D,[3],2
+AveragePooling3D,addAverPool3D,[4],2
+Conv1D,addConv1D,[2],4
+Conv3D,addConv3D,[4],4
+LeakyReLU,addLeakyReLU,"[1, 2, 3, 4, 5, 6]",1
+LocallyConnected1D,addLocallyConnected1D,[2],3
+LocallyConnected2D,addLocallyConnected2D,[3],3
+ReLU,addReLU,"[1, 2, 3, 4, 5, 6]",1
+RepeatVector,addRepeatVector,[1],1
+SeparableConv1D,addSeparableConv1D,[2],4
+SeparableConv2D,addSeparableConv2D,[3],4
+SimpleRNN,addSimpleRNN,[2],6
+SpatialDropout1D,addSpatialDropout1D,[2],1
+SpatialDropout2D,addSpatialDropout2D,[3],1
+SpatialDropout3D,addSpatialDropout3D,[4],1
+ThresholdedReLU,addThresholdedReLU,"[1, 2, 3, 4, 5, 6]",1
+Conv2DTranspose,addConv2DTranspose,[3],4
+Conv3DTranspose,addConv3DTranspose,[4],4
+DepthwiseConv2D,addDepthwiseConv2D,[3],3
+Flatten,addFlatten,"[1, 2, 3, 4, 5, 6]",0
+GRU,addGRU,[2],3
+GaussianDropout,addGaussianDropout,"[1, 2, 3, 4, 5, 6]",1
+GaussianNoise,addGaussianNoise,"[1, 2, 3, 4, 5, 6]",1
+GlobalAveragePooling1D,addGloAverPool1D,[2],1
+GlobalAveragePooling2D,addGloAverPool2D,[3],1
+GlobalAveragePooling3D,addGloAverPool3D,[4],1
+GlobalMaxPooling1D,addGloMaxPool1D,[2],1
+GlobalMaxPooling2D,addGloMaxPool2D,[3],1
+GlobalMaxPooling3D,addGloMaxPool3D,[4],1
+LSTM,addLSTM,[2],8
+LayerNormalization,addLayerNormal,"[1, 2, 3, 4, 5, 6]",3
