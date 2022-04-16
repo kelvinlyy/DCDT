@@ -1,11 +1,11 @@
-<mxfile host="app.diagrams.net" modified="2022-04-16T13:36:49.467Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4 Safari/605.1.15" etag="75A8r2G2ETPTHCueVBCb" version="17.4.5" type="github">
+<mxfile host="app.diagrams.net" modified="2022-04-16T13:39:47.685Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4 Safari/605.1.15" etag="edQJafD9mtjTuyge0Ffw" version="17.4.5" type="github">
   <diagram id="KMrJF5xkyydDern5e_y1" name="Page-1">
-    <mxGraphModel dx="784" dy="596" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1110" dy="845" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="ZWeKVcOg7MyMfSJs-o2y-11" value="Inconsistency localization" style="swimlane;" parent="1" vertex="1">
-          <mxGeometry x="72" y="570" width="2008" height="680" as="geometry" />
+          <mxGeometry x="72" y="570" width="1198" height="680" as="geometry" />
         </mxCell>
         <mxCell id="n7mDoR5MaPQhv6rX2TrS-96" value="Framework A" style="swimlane;labelBackgroundColor=none;labelBorderColor=none;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="ZWeKVcOg7MyMfSJs-o2y-11" vertex="1">
           <mxGeometry x="38" y="95" width="138" height="200" as="geometry" />
