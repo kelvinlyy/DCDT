@@ -21,7 +21,6 @@ class GA:
         new_model = keras.models.clone_model(model)
         new_model.set_weights(model.get_weights()) # clone_model does not clone the weights
         self.model = new_model
-        self.model.predict(x[None,:])
         
         self.input = x
         self.input_scale = input_scale # {1, 255}

@@ -36,6 +36,8 @@ x = pickle.loads(r.hget("input", input_key))
 if len(x.shape) == 3:
     x = x[None,:]
 
+model.predict(x)  # init model output layers
+    
 # collect model intermediate layers output function
 layers_output = []
 for l in model.layers:
