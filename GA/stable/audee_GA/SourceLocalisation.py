@@ -1,13 +1,25 @@
 import redis
 import pickle
-from kerasPredictCMD import get_outputs_cmd
+from kerasPredictCMD import get_outputs_cmd, get_prediction_cmd
 from InconsistencyCheck import ga_inc
 from multiprocessing import Process
 import keras
 import os
+import sys
 from tqdm import tqdm
 import numpy as np
+import random
+import time
 
+class HiddenPrints:
+    def __enter__(self):
+        self._original_stdout = sys.stdout
+        sys.stdout = open(os.devnull, 'w')
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        sys.stdout.close()
+        sys.stdout = self._original_stdout
+        
 class SourceLocaliser:
     def __init__(self, model, frameworks, x, model_config, db_flag):
         self.redis_server = redis.Redis(db=db_flag)
@@ -24,10 +36,46 @@ class SourceLocaliser:
             pipe.execute()
             
     def update_model(self, model):
-        self.redis_server.mset({"model": pickle.dumps(model)})
+        self.redis_server.hset("model", 0, pickle.dumps(model))
         
     def update_x(self, x):
-        self.redis_server.mset({"inputs": pickle.dumps(x)})
+        self.redis_server.hset("input", 0, pickle.dumps(x))
+        
+        
+    def compute_layer_dist(self, f_prime, x_prime):
+        # load f_prime, x_prime into redis db
+        self.update_x(x_prime)
+        self.update_model(f_prime)
+
+        cmd_1 = get_prediction_cmd(self.backend_1, self.db_flag, 0, 0, 0)
+        cmd_2 = get_prediction_cmd(self.backend_2, self.db_flag, 0, 0, 0)
+
+        p1 = Process(target=lambda: os.system(cmd_1))
+        p2 = Process(target=lambda: os.system(cmd_2))
+        p1.start()
+        p2.start()
+        p1.join()
+        p2.join()
+
+        # load predictions
+        with self.redis_server.pipeline() as pipe:
+            pipe.hget("predictions_0", self.backend_1)
+            pipe.hget("predictions_0", self.backend_2)
+            predictions = pipe.execute()
+
+        p1 = pickle.loads(predictions[0])
+        p2 = pickle.loads(predictions[1])
+
+        assert len(p1) == len(p2)
+
+        predictions_diff = np.abs(p1 - p2).ravel()
+        layer_dist = np.sum(predictions_diff) / len(predictions_diff)
+        
+        # recover model and input state
+        self.update_x(self.x)
+        self.update_model(self.model)
+
+        return layer_dist
             
     # compute layer distance
     def compute_all_layers_dist(self):
@@ -56,13 +104,14 @@ class SourceLocaliser:
         for i in range(len(self.predictions_1)):
             p1 = self.predictions_1[i]
             p2 = self.predictions_2[i]
-            p1 = (p1 - np.min(p1)) / (np.max(p1) - np.min(p1))
-            p2 = (p2 - np.min(p2)) / (np.max(p2) - np.min(p2))
+#             p1 = (p1 - np.min(p1)) / (np.max(p1) - np.min(p1))
+#             p2 = (p2 - np.min(p2)) / (np.max(p2) - np.min(p2))
                   
             predictions_diff = np.abs(p1 - p2).ravel()
             self.layers_dist.append(np.sum(predictions_diff) / len(predictions_diff))
         
         return self.layers_dist
+    
     
     # compute rate of change of inconsistency fitness score betwen layers
     def compute_dists_change(self, layer_idx, epsilon=10**-7):
@@ -82,25 +131,28 @@ class SourceLocaliser:
         return self.t1_layers
     
     # create a new layer based on config
-    def replace(self, L, a):
+    def replace(self, L, L_idx, a):
         layer_config = L.get_config()
         original_a = layer_config[a]
         alt_a = [v for v in self.model_config[L_idx][a] if v != original_a]
+        if not alt_a:
+            return None, None
         new_a = random.choice(alt_a)
         layer_config[a] = new_a
         L_prime = L.from_config(layer_config)
         return L_prime, new_a
     
     # create a simple model using 1 layer L_prime 
-    def create_test_model(self, L_prime):
+    def create_test_model(self, L_prime, x_prime):
         test_model = keras.Sequential()
         test_model.add(L_prime)
-        # not sure if need to call model.build()
+        test_model.build(x_prime.shape)
         return test_model
     
     # check errors while running the newly created model
-    def checkCrash_NaN(self, f_prime):
+    def checkCrash_NaN(self, f_prime, x_prime):
         self.update_model(f_prime)
+        self.update_x(x_prime)
         cmd_1 = get_outputs_cmd(self.backend_1, self.db_flag, 0, 0, 0, 'error')
         cmd_2 = get_outputs_cmd(self.backend_1, self.db_flag, 0, 0, 0, 'error')
 
@@ -129,57 +181,90 @@ class SourceLocaliser:
             
         return errors
     
-    def fixDNN(self, L, a, a_prime):
+    def fixDNN(self, L, L_idx, a, a_prime):
         layer_config = L.get_config()
         layer_config[a] = a_prime
         L_prime = L.from_config(layer_config)
+        x = L_prime(self.model.layers[L_idx-1].get_output_at(-1))
+
+        for i in range(L_idx+1, len(self.model.layers)):
+            x = self.model.layers[i](x)
+
+        f = keras.models.Model(input=self.model.input, output=x)
+        f.build(self.x.shape)
         
-        f = self.create_test_model(L_prime)
         return f
-       
     
-    def detectInconsistency(f_prime, x_prime):
-        model = f_prime
-        x_max = ga_inc(self.backend_1, self.backend_2, f_prime, x_prime, 255, self.db_flag+1)
-        return max_max
+    def detectInconsistency(self, f_prime, x_prime):
+        with HiddenPrints():
+            f_prime.predict(x_prime) # init model output layers
+            x_max = ga_inc(self.backend_1, self.backend_2, f_prime, x_prime, 1, self.db_flag+1)
+
+        return x_max
     
-    def main(self, t1, t2):
+    def main(self, t1, t2, epsilon=10**-7):
         X = []
         Y = []
         
-        for _ in tqdm(range(5)):
-            beta = self.t1_dists_change(t1)
+        visited_layers = []
+        
+        for _ in range(8): # max # layers to localize
+            start_time = time.perf_counter()
+            beta = [l for l in self.t1_dists_change(t1) if l not in visited_layers]
             if beta == []: # finish localization
                 return X, Y
             
             L, L_idx = beta[0] # get layer object and layer index
+            a_L = self.model_config[L_idx] # get the set of possible layer parameters
+            visited_layers.append(beta[0])
             
-            if L_idx < len(self.model_config):
-                a_L = self.model_config[L_idx] # get the set of possible layer parameters
-            else:
+            print(f'Localizing layer {L_idx}: {L.__class__.__name__}...')
+            
+            if not a_L:
+                print('Localization failed: No parameter received\n')
+                print()
                 continue
+            # update inputs to fit the chosen layer
+            x_prime = pickle.loads(self.redis_server.hget("predictions_0", self.backend_1))[L_idx-1]
+            self.update_x(x_prime)
             
             P = []
-            # update inputs to fit the chosen layer
-            x_prime = self.redis_server.hget("predictions", self.backend_1)[L_idx-1]
-            self.update_x(x_prime)
             for a in a_L:
-                L_prime, a_prime = self.replace(L, a)
-                f_prime = self.create_test_model(L_prime)
+                L_prime, a_prime = self.replace(L, L_idx, a)
+                if a_prime == None: # no available parameter
+                    continue
+                    
+                f_prime = self.create_test_model(L_prime, x_prime)
+                
+                print(f'Parameter "{a}" is set to be "{a_prime}"')
 
-                y = self.checkCrash_NaN(f_prime)
+                y = self.checkCrash_NaN(f_prime, x_prime)
                 if y != []:
+                    print('Errors: model crashes or gives NaN')
                     Y.append([y, L_idx, a_prime])
                 else:
-                    x_max = detectInconsistency(f_prime, x_prime)
-                    self.update_x(x_max)
+                    print('Maximizing inconsistency of the input...')
                     
-                    if self.compute_dists_change(L_idx) < t2:
+                    x_max = self.detectInconsistency(f_prime, x_prime)
+                    
+                    L_dist = self.compute_layer_dist(f_prime, x_max)
+                    max_prev_layers_dist = max(self.layers_dist[:L_idx])
+                    L_dist_change = (L_dist - max_prev_layers_dist) / (max_prev_layers_dist + epsilon)
+
+                    if L_dist_change < t2:
+                        print(f'Inconsistency is localized in: \t{a} = {L.get_config()[a]}')
                         P.append(a)
-                        X.append([L_idx, P])
-                        f = self.fixDNN(L, a, a_prime)
-                        self.update_model(f)
-                    
-            self.update_x(self.x)
+                        
+                        self.model = self.fixDNN(L, L_idx, a, a_prime)
+                        self.update_model(self.model)
+             
+            if P != []:
+                X.append([L_idx, P])
+            
+            end_time = time.perf_counter()
+            print()
+            print(f'Time taken: {end_time - start_time}')
+            print()
+            print()
                 
         return X, Y
