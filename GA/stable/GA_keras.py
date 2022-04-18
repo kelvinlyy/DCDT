@@ -191,14 +191,17 @@ class GA:
     def mutate(self, x_prime, r2, r3):
         if self.mut_level == 'i':
             x_pp = np.clip(x_prime + np.random.standard_cauchy(x_prime.shape) * np.random.choice(2, x_prime.shape, p=[1-r2, r2]) * r3, 0, 1)
+            return x_pp
+        
         elif self.mut_level == 'w':
             x_pp = x_prime + np.random.standard_cauchy(x_prime.shape) * np.random.choice(2, x_prime.shape, p=[1-r2, r2]) * r3
+            return x_pp
+        
         elif self.mut_level == 'i+w':
             i = np.prod(self.input.shape)
             x_pp1 = np.clip(x_prime[:i] + np.random.standard_cauchy(x_prime[:i].shape) * np.random.choice(2, x_prime[:i].shape, p=[1-r2, r2]) * r3, 0, 1)
             x_pp2 = x_prime[i:] + np.random.standard_cauchy(x_prime[i:].shape) * np.random.choice(2, x_prime[i:].shape, p=[1-r2, r2]) * r3
-            
-        return np.hstack([x_pp1, x_pp2])
+            return np.hstack([x_pp1, x_pp2])
     
     # dynamically mutate the crossover product except for input-level mutation
     def dynamicMutate(self, x_prime, r2, r3):
@@ -279,7 +282,7 @@ def ga_main(fit, mut_level, model, x, input_scale, init_noise, r1, r2, r3, m, n,
         print('Continuing from the previous populations...')
         print()
         
-    if dynamicWeightMutDecay < 1:
+    if dynamicWeightMutDecay < 1 and dynamicWeightMutDecay != 0:
         warnings.warn("Warning for dynamicWeightMutDecay value: value less than 1 does not produce more diverse nan layers")
             
     prev_iter = len(ga.fit_hist)
