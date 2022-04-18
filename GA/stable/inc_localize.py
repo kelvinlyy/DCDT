@@ -146,7 +146,7 @@ class IncLocaliser:
     def create_test_model(self, L_prime, x_prime):
         test_model = keras.Sequential()
         test_model.add(L_prime)
-        test_model.build(x_prime.shape)
+#         test_model.build(x_prime.shape)
         return test_model
     
     # check errors while running the newly created model
@@ -202,9 +202,11 @@ class IncLocaliser:
 
         return x_max
     
+    
     def main(self, t1, t2, epsilon=10**-7):
         X = []
         Y = []
+        M = [] # inconsistent model pairs
         
         visited_layers = []
         
@@ -212,7 +214,7 @@ class IncLocaliser:
             start_time = time.perf_counter()
             beta = [l for l in self.t1_dists_change(t1) if l not in visited_layers]
             if beta == []: # finish localization
-                return X, Y
+                return X, Y, M
             
             L, L_idx = beta[0] # get layer object and layer index
             a_L = self.model_config[L_idx] # get the set of possible layer parameters
@@ -228,6 +230,7 @@ class IncLocaliser:
             x_prime = pickle.loads(self.redis_server.hget("predictions_0", self.backend_1))[L_idx-1]
             self.update_x(x_prime)
             
+            f_prev = self.create_test_model(L, x_prime) # original model before change
             P = []
             for a in a_L:
                 L_prime, a_prime = self.replace(L, L_idx, a)
@@ -236,7 +239,7 @@ class IncLocaliser:
                     
                 f_prime = self.create_test_model(L_prime, x_prime)
                 
-                print(f'Parameter "{a}" is set to be "{a_prime}"')
+                print(f'\nParameter "{a}" is set to be "{a_prime}"')
 
                 y = self.checkCrash_NaN(f_prime, x_prime)
                 if y != []:
@@ -255,8 +258,15 @@ class IncLocaliser:
                         print(f'Inconsistency is localized in: \t{a} = {L.get_config()[a]}')
                         P.append(a)
                         
-                        self.model = self.fixDNN(L, L_idx, a, a_prime)
-                        self.update_model(self.model)
+                        try:
+                            self.model = self.fixDNN(L, L_idx, a, a_prime)
+                        except Exception as e:
+                            print(f'Cannot fix DNN because of {e}')
+                        finally:
+                            self.update_model(self.model)
+                        
+                M.append((f'Parameter "a": {L.get_config()[a]} -> a_prime', f_prev, f_prime))
+                f_prev = f_prime
              
             if P != []:
                 X.append([L_idx, P])
@@ -267,4 +277,4 @@ class IncLocaliser:
             print()
             print()
                 
-        return X, Y
+        return X, Y, M
