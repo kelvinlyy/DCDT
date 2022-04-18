@@ -190,7 +190,7 @@ class InconsistencyFFunc:
             p = pickle.loads(p)
 #             p = (p - np.min(p)) / (np.max(p) - np.min(p) + epsilon) # normalize predictions
             self.predictions_1.append(p)
-        self.predictions_1 = np.concatenate(self.predictions_1)
+        self.predictions_1 = np.squeeze(np.stack(self.predictions_1))
 
         predictions_2 = predictions[1::2] # predictions by backend_2
         self.predictions_2 = []
@@ -198,7 +198,7 @@ class InconsistencyFFunc:
             p = pickle.loads(p)
 #             p = (p - np.min(p)) / (np.max(p) - np.min(p) + epsilon) # normalize predictions
             self.predictions_2.append(p)
-        self.predictions_2 = np.concatenate(self.predictions_2)
+        self.predictions_2 = np.squeeze(np.stack(self.predictions_2))
 
         assert len(self.predictions_1) == len(self.predictions_2)
 
@@ -288,7 +288,7 @@ class NanFFunc:
         self.predictions = []
         for p in predictions:
             self.predictions.append(pickle.loads(p))
-        self.predictions = np.concatenate(self.predictions)
+        self.predictions = np.squeeze(np.stack(self.predictions))
 
         # compute fitness
         predictions_flatten = self.predictions.reshape((self.predictions.shape[0], -1))
