@@ -20,7 +20,7 @@ class HiddenPrints:
         sys.stdout.close()
         sys.stdout = self._original_stdout
         
-class IncLocaliser:
+class SourceLocaliser:
     def __init__(self, model, frameworks, x, model_config, db_flag):
         self.redis_server = redis.Redis(db=db_flag)
         self.model = model
