@@ -29,11 +29,11 @@ class IncLocaliser:
         self.model_config = model_config
         self.db_flag = db_flag
         
-    def prepare(self):
         with self.redis_server.pipeline() as pipe:
             pipe.hset("model", 0, pickle.dumps(self.model))
             pipe.hset("input", 0, pickle.dumps(self.x))
             pipe.execute()
+        
             
     def update_model(self, model):
         self.redis_server.hset("model", 0, pickle.dumps(model))
@@ -78,7 +78,7 @@ class IncLocaliser:
         return layer_dist
             
     # compute layer distance
-    def compute_all_layers_dist(self):
+    def compute_all_layers_dist(self, normalize=True):
         cmd_1 = get_outputs_cmd(self.backend_1, self.db_flag, 0, 0, 0, 'all')
         cmd_2 = get_outputs_cmd(self.backend_2, self.db_flag, 0, 0, 0, 'all')
 
@@ -104,8 +104,10 @@ class IncLocaliser:
         for i in range(len(self.predictions_1)):
             p1 = self.predictions_1[i]
             p2 = self.predictions_2[i]
-#             p1 = (p1 - np.min(p1)) / (np.max(p1) - np.min(p1))
-#             p2 = (p2 - np.min(p2)) / (np.max(p2) - np.min(p2))
+            
+            if normalize:
+                p1 = (p1 - np.min(p1)) / (np.max(p1) - np.min(p1))
+                p2 = (p2 - np.min(p2)) / (np.max(p2) - np.min(p2))
                   
             predictions_diff = np.abs(p1 - p2).ravel()
             self.layers_dist.append(np.sum(predictions_diff) / len(predictions_diff))
@@ -121,8 +123,8 @@ class IncLocaliser:
     
     
     # return only layer indexes with rate of change larger than t1
-    def t1_dists_change(self, t1):
-        self.compute_all_layers_dist() # prepare for the subsequent computations
+    def t1_dists_change(self, t1, normalize=True):
+        self.compute_all_layers_dist(normalize) # prepare for the subsequent computations
         self.t1_layers = []
         for i in range(2, len(self.model.layers)): # choose 2 to escape the distance jump from the input layer
             layer_change = self.compute_dists_change(i)
@@ -203,7 +205,7 @@ class IncLocaliser:
         return x_max
     
     
-    def main(self, t1, t2, epsilon=10**-7):
+    def main(self, t1, t2, normalize=True, epsilon=10**-7):
         X = []
         Y = []
         M = [] # inconsistent model pairs
@@ -212,7 +214,7 @@ class IncLocaliser:
         
         for _ in range(8): # max # layers to localize
             start_time = time.perf_counter()
-            beta = [l for l in self.t1_dists_change(t1) if l not in visited_layers]
+            beta = [l for l in self.t1_dists_change(t1, normalize) if l not in visited_layers]
             if beta == []: # finish localization
                 return X, Y, M
             
@@ -253,6 +255,7 @@ class IncLocaliser:
                     L_dist = self.compute_layer_dist(f_prime, x_max)
                     max_prev_layers_dist = max(self.layers_dist[:L_idx])
                     L_dist_change = (L_dist - max_prev_layers_dist) / (max_prev_layers_dist + epsilon)
+                    print(f'New rate of change of {L_idx}: {L_dist_change}')
 
                     if L_dist_change < t2:
                         print(f'Inconsistency is localized in: \t{a} = {L.get_config()[a]}')
