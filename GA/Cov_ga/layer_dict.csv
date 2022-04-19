@@ -37,4 +37,3 @@ GlobalMaxPooling1D,addGloMaxPool1D,[2],1
 GlobalMaxPooling2D,addGloMaxPool2D,[3],1
 GlobalMaxPooling3D,addGloMaxPool3D,[4],1
 LSTM,addLSTM,[2],8
-LayerNormalization,addLayerNormal,"[1, 2, 3, 4, 5, 6]",3
