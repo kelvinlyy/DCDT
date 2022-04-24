@@ -121,7 +121,7 @@ class InconsistencyFFunc:
                 pipe.execute()
 
     # get back predictions from redis database and compute the inconsistency fitness values
-    def compute(self, layer_idx, epsilon=1e-7):
+    def compute(self, layer_idx, normalize=False, epsilon=1e-7):
         P = []
         # run multi-processes to get predictions
         if self.mut_level == 'i': # input-level mutation
@@ -188,7 +188,9 @@ class InconsistencyFFunc:
         self.predictions_1 = []
         for p in predictions_1:
             p = pickle.loads(p)
-#             p = (p - np.min(p)) / (np.max(p) - np.min(p) + epsilon) # normalize predictions
+            if normalize:
+                p = (p - np.min(p)) / (np.max(p) - np.min(p) + epsilon)
+                
             self.predictions_1.append(p)
         self.predictions_1 = np.squeeze(np.stack(self.predictions_1))
 
@@ -196,7 +198,9 @@ class InconsistencyFFunc:
         self.predictions_2 = []
         for p in predictions_2:
             p = pickle.loads(p)
-#             p = (p - np.min(p)) / (np.max(p) - np.min(p) + epsilon) # normalize predictions
+            if normalize:
+                p = (p - np.min(p)) / (np.max(p) - np.min(p) + epsilon)
+                
             self.predictions_2.append(p)
         self.predictions_2 = np.squeeze(np.stack(self.predictions_2))
 
@@ -205,8 +209,11 @@ class InconsistencyFFunc:
         # compute fitness
         self.fitness_values = []
         for i in range(len(self.predictions_1)):
-            d = np.abs(self.predictions_1[i] - self.predictions_2[i])
-            self.fitness_values.append(np.sum(d) / len(d))
+            if np.isnan(self.predictions_1[i]).any() or np.isnan(self.predictions_2[i]).any(): # if there is nan in the predictions
+                self.fitness_values.append(np.nan)
+            else:
+                d = np.abs(self.predictions_1[i] - self.predictions_2[i])
+                self.fitness_values.append(np.sum(d) / len(d))
 
         return self.fitness_values
 
