@@ -3,7 +3,26 @@ import os
 import pickle
 import redis
 import numpy as np
-from coverageUtil import total_lines, calc_coverage
+import coverage
+
+
+def calc_coverage(model, test_data):
+    cov = coverage.Coverage()
+    cov.start()
+    
+    predictions = model.predict(test_data)
+    cov.stop()    
+    covData = cov.get_data()
+    covList = [(files, sorted(covData.lines(files))) for files in covData.measured_files()]      
+    
+    return covList
+ 
+
+def total_lines(covList):
+    cnt = 0
+    for _ in covList:
+        cnt += len(_[1])
+    return cnt
 
 '''
 Arguments:
