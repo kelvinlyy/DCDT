@@ -205,7 +205,7 @@ all_dict['GaussianDropout'] = gaussiandropout_dict
 all_dict['GaussianNoise'] = gaussiannoice_dict
 all_dict['LSTM'] = lstm_dict
 
-def model_configs(model):
+def get_configs(model):
     list1 = []
     layer_str = "layer_{0}"
     num = 0

@@ -1,7 +1,6 @@
 import redis
 import pickle
-from kerasPredictCMD import get_outputs_cmd, get_prediction_cmd
-from localizeUtil.check_inc import ga_inc
+from inconsistency_max import ga_max
 from multiprocessing import Process
 import keras
 import os
@@ -10,6 +9,16 @@ from tqdm import tqdm
 import numpy as np
 import random
 import time
+import os
+
+import importlib
+spec = importlib.util.spec_from_file_location("kerasPredictCMD", "../Util/kerasPredictCMD.py")   
+
+kerasPredictCMD = importlib.util.module_from_spec(spec)       
+spec.loader.exec_module(kerasPredictCMD)
+get_outputs_cmd = kerasPredictCMD.get_outputs_cmd
+get_prediction_cmd = kerasPredictCMD.get_prediction_cmd
+
 
 class HiddenPrints:
     def __enter__(self):
@@ -20,8 +29,8 @@ class HiddenPrints:
         sys.stdout.close()
         sys.stdout = self._original_stdout
         
-class SourceLocaliser:
-    def __init__(self, model, frameworks, x, model_config, db_flag):
+class IncLocalizer:
+    def __init__(self, model, frameworks, x, model_config, db_flag, savedFailed_dir='localized_inc'):
         self.redis_server = redis.Redis(db=db_flag)
         self.model = model
         self.backend_1, self.backend_2 = frameworks
@@ -29,11 +38,18 @@ class SourceLocaliser:
         self.model_config = model_config
         self.db_flag = db_flag
         
-    def prepare(self):
+        if not os.path.exists(savedFailed_dir):
+            os.mkdir(savedFailed_dir)
+            
+        self.savedFailed_dir = '/'.join([savedFailed_dir, model_name])
+        if not os.path.exists(self.savedFailed_dir):
+            os.mkdir(self.savedFailed_dir)
+        
         with self.redis_server.pipeline() as pipe:
             pipe.hset("model", 0, pickle.dumps(self.model))
             pipe.hset("input", 0, pickle.dumps(self.x))
             pipe.execute()
+        
             
     def update_model(self, model):
         self.redis_server.hset("model", 0, pickle.dumps(model))
@@ -78,7 +94,7 @@ class SourceLocaliser:
         return layer_dist
             
     # compute layer distance
-    def compute_all_layers_dist(self):
+    def compute_all_layers_dist(self, normalize=True):
         cmd_1 = get_outputs_cmd(self.backend_1, self.db_flag, 0, 0, 0, 'all')
         cmd_2 = get_outputs_cmd(self.backend_2, self.db_flag, 0, 0, 0, 'all')
 
@@ -104,8 +120,10 @@ class SourceLocaliser:
         for i in range(len(self.predictions_1)):
             p1 = self.predictions_1[i]
             p2 = self.predictions_2[i]
-#             p1 = (p1 - np.min(p1)) / (np.max(p1) - np.min(p1))
-#             p2 = (p2 - np.min(p2)) / (np.max(p2) - np.min(p2))
+            
+            if normalize:
+                p1 = (p1 - np.min(p1)) / (np.max(p1) - np.min(p1))
+                p2 = (p2 - np.min(p2)) / (np.max(p2) - np.min(p2))
                   
             predictions_diff = np.abs(p1 - p2).ravel()
             self.layers_dist.append(np.sum(predictions_diff) / len(predictions_diff))
@@ -121,8 +139,8 @@ class SourceLocaliser:
     
     
     # return only layer indexes with rate of change larger than t1
-    def t1_dists_change(self, t1):
-        self.compute_all_layers_dist() # prepare for the subsequent computations
+    def t1_dists_change(self, t1, normalize=True):
+        self.compute_all_layers_dist(normalize) # prepare for the subsequent computations
         self.t1_layers = []
         for i in range(2, len(self.model.layers)): # choose 2 to escape the distance jump from the input layer
             layer_change = self.compute_dists_change(i)
@@ -146,7 +164,7 @@ class SourceLocaliser:
     def create_test_model(self, L_prime, x_prime):
         test_model = keras.Sequential()
         test_model.add(L_prime)
-        test_model.build(x_prime.shape)
+#         test_model.build(x_prime.shape)
         return test_model
     
     # check errors while running the newly created model
@@ -198,21 +216,30 @@ class SourceLocaliser:
     def detectInconsistency(self, f_prime, x_prime):
         with HiddenPrints():
             f_prime.predict(x_prime) # init model output layers
-            x_max = ga_inc(self.backend_1, self.backend_2, f_prime, x_prime, 1, self.db_flag+1)
+            x_max = ga_max(self.backend_1, self.backend_2, f_prime, x_prime, 1, self.db_flag+1)
 
         return x_max
     
-    def main(self, t1, t2, epsilon=10**-7):
+    
+    def main(self, t1, t2, saveDisk=True, normalize=True, epsilon=10**-7):
+        failed_dirs = [int(f) for f in os.listdir(self.savedFailed_dir) \
+                       if os.path.isdir(os.path.join(self.savedFailed_dir, f)) and f[0].isnumeric()]
+        if failed_dirs == []:
+            dir_i = 0
+        else:
+            dir_i = sorted(failed_dirs)[-1] + 1 # new save directory name if saveDisk=True
+            
         X = []
         Y = []
-        
+        M = [] # inconsistent model pairs
+         
         visited_layers = []
         
         for _ in range(8): # max # layers to localize
             start_time = time.perf_counter()
-            beta = [l for l in self.t1_dists_change(t1) if l not in visited_layers]
+            beta = [l for l in self.t1_dists_change(t1, normalize) if l not in visited_layers]
             if beta == []: # finish localization
-                return X, Y
+                return X, Y, M
             
             L, L_idx = beta[0] # get layer object and layer index
             a_L = self.model_config[L_idx] # get the set of possible layer parameters
@@ -228,6 +255,7 @@ class SourceLocaliser:
             x_prime = pickle.loads(self.redis_server.hget("predictions_0", self.backend_1))[L_idx-1]
             self.update_x(x_prime)
             
+            f_prev = self.create_test_model(L, x_prime) # original model before change
             P = []
             for a in a_L:
                 L_prime, a_prime = self.replace(L, L_idx, a)
@@ -236,7 +264,7 @@ class SourceLocaliser:
                     
                 f_prime = self.create_test_model(L_prime, x_prime)
                 
-                print(f'Parameter "{a}" is set to be "{a_prime}"')
+                print(f'\nParameter "{a}" is set to be "{a_prime}"')
 
                 y = self.checkCrash_NaN(f_prime, x_prime)
                 if y != []:
@@ -250,13 +278,32 @@ class SourceLocaliser:
                     L_dist = self.compute_layer_dist(f_prime, x_max)
                     max_prev_layers_dist = max(self.layers_dist[:L_idx])
                     L_dist_change = (L_dist - max_prev_layers_dist) / (max_prev_layers_dist + epsilon)
+                    print(f'New rate of change of {L_idx}: {L_dist_change}')
 
                     if L_dist_change < t2:
                         print(f'Inconsistency is localized in: \t{a} = {L.get_config()[a]}')
                         P.append(a)
                         
-                        self.model = self.fixDNN(L, L_idx, a, a_prime)
-                        self.update_model(self.model)
+                        try:
+                            self.model = self.fixDNN(L, L_idx, a, a_prime)
+                        except Exception as e:
+                            print(f'Cannot fix DNN because of {e}')
+                        finally:
+                            self.update_model(self.model)
+                            
+                            if saveDisk:
+                                dir_path = os.path.join(self.savedFailed_dir, str(dir_i))
+                                os.mkdir(dir_path)
+                                # write failed info into the files
+                                info, f_inc, f_fixed = map(functools.partial(os.path.join, dir_path), ['info.txt', 'inconsistent_model.h5', 'fixed_model.h5'])
+                                with open(info_f, 'w') as f:
+                                    f.write(f'Inconsistency is localized in: {a} = {L.get_config()[a]}')
+
+                                f_prev.save(f_inc)
+                                f_prime.save(f_fixed)
+
+                M.append((f'Parameter "a": {L.get_config()[a]} -> a_prime', f_prev, f_prime))
+                f_prev = f_prime
              
             if P != []:
                 X.append([L_idx, P])
@@ -267,4 +314,4 @@ class SourceLocaliser:
             print()
             print()
                 
-        return X, Y
+        return X, Y, M
