@@ -5,7 +5,7 @@ import os
 import functools
 import numpy as np
 from inc_localize import IncLocaliser
-from generate_model_configs import model_configs
+from model_configs import get_configs
 from kerasPredictCMD import get_outputs_cmd, get_prediction_cmd
 
 '''
@@ -154,7 +154,7 @@ class NaN_Localizer:
                 test_model.add(self.model.layers[i])
                 
             test_model.build(model.layers[start_layer].get_input_at(0).shape)
-            model_config = model_configs(test_model)
+            model_config = get_configs(test_model)
             start_layer = l
             
             self.incL = IncLocaliser(test_model, [self.backend_1, self.backend_2], self.input, model_config, self.db_flag+1)

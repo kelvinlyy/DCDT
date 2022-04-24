@@ -1,7 +1,7 @@
 py_env = '/data/yylaiai/anaconda3/envs/fyp_v3/bin/python'
-predictUtil_path = "predictUtil"
+Util_path = "../Util"
 
-get_prediction_py = f"{predictUtil_path}/get_prediction_torch.py"
+get_prediction_py = f"{Util_path}/get_prediction_torch.py"
 
 '''
 Arguments:
