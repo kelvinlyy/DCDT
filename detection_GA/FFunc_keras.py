@@ -1,8 +1,9 @@
-from multiprocessing import Process
 import os
-import numpy as np
 import pickle
-from kerasPredictCMD import get_outputs_cmd, get_coverage_cmd
+import numpy as np
+from multiprocessing import Process
+
+from Util.kerasPredictCMD import get_outputs_cmd, get_coverage_cmd
 
 
 P_NUM = 8 # number of processes running simultaneously
@@ -209,11 +210,11 @@ class InconsistencyFFunc:
         # compute fitness
         self.fitness_values = []
         for i in range(len(self.predictions_1)):
-            if np.isnan(self.predictions_1[i]).any() or np.isnan(self.predictions_2[i]).any(): # if there is nan in the predictions
-                self.fitness_values.append(np.nan)
-            else:
+            if np.all(np.isfinite(self.predictions_1)) and np.all(np.isfinite(self.predictions_1)): # if there is nan in the predictions
                 d = np.abs(self.predictions_1[i] - self.predictions_2[i])
                 self.fitness_values.append(np.sum(d) / len(d))
+            else:
+                self.fitness_values.append(np.nan)
 
         return self.fitness_values
 

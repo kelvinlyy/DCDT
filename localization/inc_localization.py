@@ -1,23 +1,16 @@
-import redis
-import pickle
-from inconsistency_max import ga_max
-from multiprocessing import Process
-import keras
 import os
 import sys
-from tqdm import tqdm
-import numpy as np
-import random
 import time
-import os
+import random
+import redis
+import keras
+import pickle
+import numpy as np
+from tqdm import tqdm
+from multiprocessing import Process
 
-import importlib
-spec = importlib.util.spec_from_file_location("kerasPredictCMD", "../Util/kerasPredictCMD.py")   
-
-kerasPredictCMD = importlib.util.module_from_spec(spec)       
-spec.loader.exec_module(kerasPredictCMD)
-get_outputs_cmd = kerasPredictCMD.get_outputs_cmd
-get_prediction_cmd = kerasPredictCMD.get_prediction_cmd
+from localization.inconsistency_max import ga_max
+from Util.kerasPredictCMD import get_outputs_cmd, get_prediction_cmd
 
 
 class HiddenPrints:
@@ -30,7 +23,7 @@ class HiddenPrints:
         sys.stdout = self._original_stdout
         
 class IncLocalizer:
-    def __init__(self, model, frameworks, x, model_config, db_flag, savedFailed_dir='localized_inc'):
+    def __init__(self, model, frameworks, x, model_name, model_config, db_flag, savedFailed_dir='localized_inc'):
         self.redis_server = redis.Redis(db=db_flag)
         self.model = model
         self.backend_1, self.backend_2 = frameworks
