@@ -1,10 +1,11 @@
+import os
 import redis
 import keras
 import pickle
-import os
 import functools
 import numpy as np
-from kerasPredictCMD import get_outputs_cmd, get_prediction_cmd
+
+from Util.kerasPredictCMD import get_outputs_cmd, get_prediction_cmd
 
 '''
 class for localising NaN error found in GA
@@ -135,7 +136,7 @@ class NanLocalizer:
         return L, UF
     
     # main function to run the localisation algorithm
-    def localiseNan(self, saveDisk=False):
+    def localiseNan(self, saveDisk=True):
         failed_dirs = [int(f) for f in os.listdir(self.savedFailed_dir) \
                        if os.path.isdir(os.path.join(self.savedFailed_dir, f)) and f[0].isnumeric()]
         if failed_dirs == []:

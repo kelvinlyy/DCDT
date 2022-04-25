@@ -1,6 +1,6 @@
 py_env = "/data/yylaiai/anaconda3/envs/audee_test/bin/python"
 
-Util_path = "../Util"
+Util_path = "Util"
 get_outputs_py = f"{Util_path}/get_outputs_keras.py"
 get_prediction_py = f"{Util_path}/get_prediction_keras.py"
 get_coverage_py = f"{Util_path}/get_coverage_keras.py"

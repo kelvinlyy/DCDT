@@ -1,12 +1,13 @@
+import os
+import time
+import random
 import keras
 import redis
 import pickle
-import numpy as np
-import random
-import time
-from FFunc_keras import InconsistencyFFunc, NanFFunc, CoverageFFunc
-import os
 import warnings
+import numpy as np
+
+from detection_GA.FFunc_keras import InconsistencyFFunc, NanFFunc, CoverageFFunc
 
 # input should be in range [0,1)
 # populations: in flattened shape

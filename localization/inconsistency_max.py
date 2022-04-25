@@ -1,5 +1,5 @@
-from GA_keras import GA, ga_main
 import numpy as np
+from detection_GA.GA_keras import GA, ga_main
 
 # GA hyperparameters
 mut_level = 'i'
