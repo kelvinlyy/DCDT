@@ -1,4 +1,7 @@
-py_env = "/data/yylaiai/anaconda3/envs/audee_test/bin/python"
+import json
+f = open('ENV_PATH.json')
+data = json.load(f)
+py_env = data['PY_ENV_PATH']
 
 Util_path = "Util"
 get_outputs_py = f"{Util_path}/get_outputs_keras.py"
