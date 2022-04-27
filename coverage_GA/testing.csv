@@ -1,2 +1,0 @@
-layer_name,add_function,input_shape,para_num, aval_hyperparameters
-Dense,addDense,"[1, 2, 3, 4, 5, 6]",1, "{'a': 2, 'b': 3}"
