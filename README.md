@@ -11,6 +11,7 @@ It has two paths you need to configure:
 
 * `SITE_PATH`: the path of the site-packages you will call when you are using the python environment
 
-After that, run system_demo.ipynb
-
 <br/>
+
+After configuring the paths, you can open `system_demo.ipynb` to run our system
+
