@@ -9,7 +9,8 @@ This is an automated testing system in Python for TensorFlow and Theano powered 
 It has two paths you need to configure:
 * `PY_ENV_PATH`: the path of the python environment you are using
 
-* `PY_LIB_PATH`: the path of the site-packages you will call when you are using the python environment
+* `SITE_PATH`: the path of the site-packages you will call when you are using the python environment
 
+After that, run system_demo.ipynb
 
 <br/>
