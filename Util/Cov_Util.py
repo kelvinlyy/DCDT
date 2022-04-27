@@ -1,5 +1,10 @@
-tensorflow_root = r"/data/ykchanbf/anaconda3/envs/fyp/lib/python3.6/site-packages/tensorflow*"
-keras_root = r"/data/ykchanbf/anaconda3/envs/fyp/lib/python3.6/site-packages/keras*"
+import json
+f = open('ENV_PATH.json')
+data = json.load(f)
+sitepackage = data['SITE_PATH']
+
+tensorflow_root = fr"{sitepackage}/tensorflow*"
+keras_root = fr"{sitepackage}/keras*"
 
 
 import coverage

@@ -1,4 +1,5 @@
 {
     "PY_ENV_PATH": "/data/yylaiai/anaconda3/envs/audee_test/bin/python",
-    "PY_LIB_PATH": "/data/yylaiai/anaconda3/envs/audee_test/bin/python"
+    "PY_LIB_PATH": "/data/yylaiai/anaconda3/envs/audee_test/bin/python",
+    "SITE_PATH": "/data/ykchanbf/anaconda3/envs/fyp/lib/python3.6/site-packages/"
 } 
