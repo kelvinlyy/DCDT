@@ -15,4 +15,4 @@ It has two paths you need to configure:
 
 After configuring the paths, you can open `system_demo.ipynb` to run our system
 
-You may also visit our github repository at https://github.com/kelvinlyy/fyp21-22
+You may also visit our github repository at https://github.com/kelvinlyy/dcdt
