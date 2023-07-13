@@ -1,4 +1,4 @@
-# Differential Coverage-Directed DL Framework Testing
+# Differential Coverage-Directed dl framework Testing
 
 This is an automated testing system in Python for TensorFlow and Theano powered by code coverage and differential testing.
 
